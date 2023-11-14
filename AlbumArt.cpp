@@ -1,13 +1,13 @@
 #include "stdafx.hpp"
 
-AlbumArt::AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub) : m_handle(handle), m_guid(*guids::art[id]), m_api(album_art_manager_v2::get())
+AlbumArt::AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub) : m_handle(handle), m_guid(get_guid(id)), m_api(album_art_manager_v2::get())
 {
 	if (try_now_playing()) return;
 	if (try_normal()) return;
 	if (want_stub) try_stub();
 }
 
-AlbumArt::AlbumArt(size_t art_id) : m_guid(*guids::art[art_id]), m_api(album_art_manager_v2::get())
+AlbumArt::AlbumArt(size_t id) : m_guid(get_guid(id)), m_api(album_art_manager_v2::get())
 {
 	try_stub();
 }
@@ -42,15 +42,20 @@ AlbumArt::Data AlbumArt::path_to_data(wil::zwstring_view path)
 	return data;
 }
 
+GUID AlbumArt::get_guid(size_t id)
+{
+	return *guids::art[id];
+}
+
 HRESULT AlbumArt::check_id(size_t id)
 {
 	if (id < guids::art.size()) return S_OK;
 	return E_INVALIDARG;
 }
 
-IJSImage* AlbumArt::get_embedded(const metadb_handle_ptr& handle, size_t id)
+IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t id)
 {
-	const GUID guid = *guids::art[id];
+	const GUID guid = get_guid(id);
 	const string8 path = handle->get_path();
 	album_art_extractor::ptr ptr;
 
@@ -118,6 +123,30 @@ bool AlbumArt::try_now_playing()
 	return false;
 }
 
+void AlbumArt::attach_image(metadb_handle_list_cref handles, size_t id, wil::zwstring_view path)
+{
+	const GUID guid = get_guid(id);
+	auto data = path_to_data(path);
+	if (data.is_valid())
+	{
+		auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
+		Attach::init(callback, "Attaching image...");
+	}
+}
+
+void AlbumArt::remove_attached_image(metadb_handle_list_cref handles, size_t id)
+{
+	const GUID guid = get_guid(id);
+	auto callback = fb2k::service_new<Attach>(Attach::Action::Remove, handles, guid);
+	Attach::init(callback, "Removing attached images...");
+}
+
+void AlbumArt::remove_all_attached_images(metadb_handle_list_cref handles)
+{
+	auto callback = fb2k::service_new<Attach>(Attach::Action::RemoveAll, handles);
+	Attach::init(callback, "Removing attached images...");
+}
+
 void AlbumArt::set_path(const album_art_path_list::ptr& paths)
 {
 	if (paths.is_valid() && paths->get_count() > 0)
@@ -148,4 +177,50 @@ void AlbumArt::try_stub()
 		set_path(paths);
 	}
 	catch (...) {}
+}
+
+AlbumArt::Attach::Attach(Action action, metadb_handle_list_cref handles, const GUID& guid, const Data& data) : m_action(action), m_handles(handles), m_guid(guid), m_data(data) {}
+
+void AlbumArt::Attach::init(threaded_process_callback::ptr callback, wil::zstring_view title)
+{
+	const auto flags = Component::get_threaded_process_flags();
+	threaded_process::get()->run_modeless(callback, flags, Fb::wnd(), title.data());
+}
+
+void AlbumArt::Attach::run(threaded_process_status& status, abort_callback& abort)
+{
+	const size_t count = m_handles.get_count();
+	auto api = file_lock_manager::get();
+	album_art_editor::ptr ptr;
+	std::set<string8> paths;
+
+	for (auto&& [index, handle] : std::views::enumerate(m_handles))
+	{
+		const string8 path = handle->get_path();
+		if (!paths.emplace(path).second) continue;
+		if (!album_art_editor::g_get_interface(ptr, path)) continue;
+
+		status.set_progress(index + 1, count);
+		status.set_item_path(path);
+
+		try
+		{
+			auto lock = api->acquire_write(path, abort);
+			auto instance_ptr = ptr->open(nullptr, path, abort);
+			switch (m_action)
+			{
+			case Action::Attach:
+				instance_ptr->set(m_guid, m_data, abort);
+				break;
+			case Action::Remove:
+				instance_ptr->remove(m_guid);
+				break;
+			case Action::RemoveAll:
+				instance_ptr->remove_all_();
+				break;
+			}
+			instance_ptr->commit(abort);
+		}
+		catch (...) {}
+	}
 }

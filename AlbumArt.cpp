@@ -14,20 +14,20 @@ AlbumArt::AlbumArt(size_t id) : m_guid(get_guid(id)), m_api(album_art_manager_v2
 
 AlbumArt::Data AlbumArt::istream_to_data(IStream* stream)
 {
-	Data data;
 	STATSTG sts;
 
 	if SUCCEEDED(stream->Stat(&sts, STATFLAG_DEFAULT))
 	{
-		const DWORD bytes = sts.cbSize.LowPart;
-		std::vector<uint8_t> image_data(bytes);
+		const auto bytes = sts.cbSize.LowPart;
+		auto data = fb2k::service_new<album_art_data_impl>();
+		data->set_size(bytes);
 		ULONG bytes_read{};
-		if SUCCEEDED(stream->Read(image_data.data(), bytes, &bytes_read))
+		if SUCCEEDED(stream->Read(data->get_ptr(), bytes, &bytes_read))
 		{
-			data = album_art_data_impl::g_create(image_data.data(), image_data.size());
+			return data;
 		}
 	}
-	return data;
+	return Data();
 }
 
 AlbumArt::Data AlbumArt::path_to_data(wil::zwstring_view path)

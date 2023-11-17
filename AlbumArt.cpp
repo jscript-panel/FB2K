@@ -60,7 +60,7 @@ IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t i
 	album_art_extractor::ptr ptr;
 
 	if (!album_art_extractor::g_get_interface(ptr, path)) return nullptr;
-	
+
 	try
 	{
 		auto instance = ptr->open(nullptr, path, fb2k::noAbort);

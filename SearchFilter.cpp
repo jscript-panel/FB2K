@@ -19,7 +19,7 @@ metadb_handle_list SearchFilter::get_library_items(wil::zwstring_view query)
 metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, metadb_handle_list_cref handles)
 {
 	if (Fb::is_v1()) return get_items_legacy(filter, handles);
-	
+
 	auto index = search_index_manager::get()->create_index(handles, nullptr);
 	return get_items_from_index(filter, index);
 }

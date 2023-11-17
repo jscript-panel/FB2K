@@ -12,34 +12,11 @@ AlbumArt::AlbumArt(size_t id) : m_guid(get_guid(id)), m_api(album_art_manager_v2
 	try_stub();
 }
 
-AlbumArt::Data AlbumArt::istream_to_data(IStream* stream)
-{
-	STATSTG sts;
-
-	if SUCCEEDED(stream->Stat(&sts, STATFLAG_DEFAULT))
-	{
-		const auto bytes = sts.cbSize.LowPart;
-		auto data = fb2k::service_new<album_art_data_impl>();
-		data->set_size(bytes);
-		ULONG bytes_read{};
-		if SUCCEEDED(stream->Read(data->get_ptr(), bytes, &bytes_read))
-		{
-			return data;
-		}
-	}
-	return Data();
-}
-
 AlbumArt::Data AlbumArt::path_to_data(wil::zwstring_view path)
 {
-	Data data;
 	wil::com_ptr_t<IStream> stream;
-
-	if SUCCEEDED(SHCreateStreamOnFileEx(path.data(), STGM_READ | STGM_SHARE_DENY_WRITE, GENERIC_READ, FALSE, nullptr, &stream))
-	{
-		data = istream_to_data(stream.get());
-	}
-	return data;
+	if FAILED(IStreamHelpers::create_from_path(path, stream)) return Data();
+	return IStreamHelpers::to_album_art_data(stream.get());
 }
 
 GUID AlbumArt::get_guid(size_t id)
@@ -51,6 +28,17 @@ HRESULT AlbumArt::check_id(size_t id)
 {
 	if (id < guids::art.size()) return S_OK;
 	return E_INVALIDARG;
+}
+
+HRESULT AlbumArt::to_bitmap(const Data& data, wil::com_ptr_t<IWICBitmap>& bitmap)
+{
+	RETURN_HR_IF(E_FAIL, data.is_empty());
+	if SUCCEEDED(ImageHelpers::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
+
+	wil::com_ptr_t<IStream> stream;
+	RETURN_IF_FAILED(IStreamHelpers::create_from_album_art_data(data, stream));
+	RETURN_IF_FAILED(ImageHelpers::istream_to_bitmap(stream.get(), bitmap));
+	return S_OK;
 }
 
 IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t id)
@@ -67,7 +55,7 @@ IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t i
 		auto data = instance->query(guid, fb2k::noAbort);
 		wil::com_ptr_t<IWICBitmap> bitmap;
 
-		if SUCCEEDED(ImageHelpers::album_art_data_to_bitmap(data, bitmap))
+		if SUCCEEDED(to_bitmap(data, bitmap))
 		{
 			const std::wstring wpath = wdisplay_path(path);
 			return new ComObject<JSImage>(bitmap, wpath);
@@ -80,10 +68,8 @@ IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t i
 
 IJSImage* AlbumArt::to_image(uint32_t max_size)
 {
-	if (m_data.is_empty()) return nullptr;
-
 	wil::com_ptr_t<IWICBitmap> bitmap;
-	if FAILED(ImageHelpers::album_art_data_to_bitmap(m_data, bitmap)) return nullptr;
+	if FAILED(to_bitmap(m_data, bitmap)) return nullptr;
 	if FAILED(ImageHelpers::fit_to(max_size, bitmap)) return nullptr;
 	return new ComObject<JSImage>(bitmap, m_path);
 }
@@ -163,7 +149,9 @@ void AlbumArt::show_viewer()
 	}
 	else
 	{
-		Component::popup("Album art not found.");
+		const auto name = album_art_ids::capitalized_name_of(m_guid);
+		const auto msg = fmt::format("{} not found.", name);
+		Component::popup(msg);
 	}
 }
 

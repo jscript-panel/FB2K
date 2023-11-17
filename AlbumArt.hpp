@@ -8,10 +8,10 @@ public:
 	AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub);
 	AlbumArt(size_t id); // stub only
 
-	static Data istream_to_data(IStream* stream);
 	static Data path_to_data(wil::zwstring_view path);
 	static GUID get_guid(size_t id);
 	static HRESULT check_id(size_t id);
+	static HRESULT to_bitmap(const Data& data, wil::com_ptr_t<IWICBitmap>& bitmap);
 	static IJSImage* get_attached_image(const metadb_handle_ptr& handle, size_t id);
 	static void attach_image(metadb_handle_list_cref handles, size_t id, wil::zwstring_view path);
 	static void remove_attached_image(metadb_handle_list_cref handles, size_t id);

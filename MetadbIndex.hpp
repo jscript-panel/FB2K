@@ -21,7 +21,7 @@ public:
 			PlaybackStatistics::api()->add(client(), guids::metadb_index, system_time_periods::week * 4);
 			PlaybackStatistics::api()->dispatch_global_refresh();
 		}
-		catch (std::exception const& e)
+		catch (const std::exception& e)
 		{
 			PlaybackStatistics::api()->remove(guids::metadb_index);
 			FB2K_console_formatter() << fmt::format("{}: Playback Statistics critical initialisation failure: {}", Component::name, e.what());

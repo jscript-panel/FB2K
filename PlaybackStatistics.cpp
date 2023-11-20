@@ -1,5 +1,21 @@
 #include "stdafx.hpp"
 
+PlaybackStatistics::TransactionScope::TransactionScope()
+{
+	if (Fb::is_v2())
+	{
+		ptr = metadb_index_manager_v2::get()->begin_transaction();
+	}
+}
+
+PlaybackStatistics::TransactionScope::~TransactionScope()
+{
+	if (ptr.is_valid())
+	{
+		ptr->commit();
+	}
+}
+
 PlaybackStatistics::Fields PlaybackStatistics::get_fields(metadb_index_hash hash)
 {
 	mem_block_container_impl temp;
@@ -35,12 +51,13 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 	uint32_t total{};
 
 	const size_t count = handles.get_count();
+	auto client = MetadbIndex::client();
 
 	for (const size_t i : std::views::iota(0U, count))
 	{
 		auto rec = source.get_info(i);
 		if (rec.info.is_empty()) continue;
-		const auto hash = MetadbIndex::client()->transform(rec.info->info(), handles[i]->get_location());
+		const auto hash = client->transform(rec.info->info(), handles[i]->get_location());
 		if (hash_set.emplace(hash).second)
 		{
 			total += get_fields(hash).playcount;
@@ -52,16 +69,30 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 
 void PlaybackStatistics::clear(metadb_handle_list_cref handles)
 {
-	HashSet hash_set;
-	metadb_index_hash hash{};
+	HashList hash_list;
 
-	for (auto&& handle : handles)
 	{
-		if (MetadbIndex::client()->hashHandle(handle, hash) && hash_set.emplace(hash).second)
+		HashSet hash_set;
+		metadb_index_hash hash{};
+		auto client = MetadbIndex::client();
+		auto scope = TransactionScope();
+
+		for (auto&& handle : handles)
 		{
-			set_fields(hash, Fields());
+			if (client->hashHandle(handle, hash) && hash_set.emplace(hash).second)
+			{
+				set_fields(hash, Fields(), scope.ptr);
+				hash_list.add_item(hash);
+			}
 		}
 	}
+
+	refresh(hash_list);
+}
+
+void PlaybackStatistics::refresh(HashList hash_list)
+{
+	api()->dispatch_refresh(guids::metadb_index, hash_list);
 }
 
 void PlaybackStatistics::refresh(metadb_handle_list_cref handles)
@@ -69,19 +100,20 @@ void PlaybackStatistics::refresh(metadb_handle_list_cref handles)
 	HashList hash_list;
 	HashSet hash_set;
 	metadb_index_hash hash{};
+	auto client = MetadbIndex::client();
 
 	for (auto&& handle : handles)
 	{
-		if (MetadbIndex::client()->hashHandle(handle, hash) && hash_set.emplace(hash).second)
+		if (client->hashHandle(handle, hash) && hash_set.emplace(hash).second)
 		{
 			hash_list.add_item(hash);
 		}
 	}
 
-	api()->dispatch_refresh(guids::metadb_index, hash_list);
+	refresh(hash_list);
 }
 
-void PlaybackStatistics::set_fields(metadb_index_hash hash, const Fields& f)
+void PlaybackStatistics::set_fields(metadb_index_hash hash, const Fields& f, const metadb_index_transaction::ptr& transaction_ptr)
 {
 	stream_writer_formatter_simple writer;
 	writer << f.first_played;
@@ -89,5 +121,13 @@ void PlaybackStatistics::set_fields(metadb_index_hash hash, const Fields& f)
 	writer << f.loved;
 	writer << f.playcount;
 	writer << f.rating;
-	api()->set_user_data(guids::metadb_index, hash, writer.m_buffer.get_ptr(), writer.m_buffer.get_size());
+
+	if (transaction_ptr.is_valid())
+	{
+		transaction_ptr->set_user_data(guids::metadb_index, hash, writer.m_buffer.get_ptr(), writer.m_buffer.get_size());
+	}
+	else
+	{
+		api()->set_user_data(guids::metadb_index, hash, writer.m_buffer.get_ptr(), writer.m_buffer.get_size());
+	}
 }

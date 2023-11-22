@@ -17,8 +17,10 @@ namespace
 
 				for (const size_t i : std::views::iota(0U, count))
 				{
-					const auto old_hash = client->transform(*before[i], handles[i]->get_location());
-					const auto new_hash = client->transform(*after[i], handles[i]->get_location());
+					const auto& location = handles[i]->get_location();
+					const auto old_hash = client->transform(*before[i], location);
+					const auto new_hash = client->transform(*after[i], location);
+
 					if (old_hash == new_hash) continue;
 					if (!hash_set.emplace(new_hash).second) continue;
 

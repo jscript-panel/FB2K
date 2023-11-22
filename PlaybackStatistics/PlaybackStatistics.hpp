@@ -18,8 +18,8 @@ public:
 		metadb_index_transaction::ptr ptr;
 	};
 
-	using HashSet = std::set<metadb_index_hash>;;
 	using HashList = pfc::list_t<metadb_index_hash>;
+	using HashSet = std::set<metadb_index_hash>;
 
 	static Fields get_fields(metadb_index_hash hash);
 	static metadb_index_manager::ptr api();

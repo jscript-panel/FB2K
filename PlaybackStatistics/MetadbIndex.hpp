@@ -16,14 +16,16 @@ public:
 
 	static void init()
 	{
+		auto api = PlaybackStatistics::api();
+
 		try
 		{
-			PlaybackStatistics::api()->add(client(), guids::metadb_index, system_time_periods::week * 4);
-			PlaybackStatistics::api()->dispatch_global_refresh();
+			api->add(client(), guids::metadb_index, system_time_periods::week * 4);
+			api->dispatch_global_refresh();
 		}
 		catch (const std::exception& e)
 		{
-			PlaybackStatistics::api()->remove(guids::metadb_index);
+			api->remove(guids::metadb_index);
 			FB2K_console_formatter() << fmt::format("{}: Playback Statistics critical initialisation failure: {}", Component::name, e.what());
 		}
 	}

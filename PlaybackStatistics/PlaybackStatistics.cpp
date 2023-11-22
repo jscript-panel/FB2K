@@ -57,6 +57,7 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 	{
 		auto rec = source.get_info(i);
 		if (rec.info.is_empty()) continue;
+
 		const auto hash = client->transform(rec.info->info(), handles[i]->get_location());
 		if (hash_set.emplace(hash).second)
 		{
@@ -92,7 +93,10 @@ void PlaybackStatistics::clear(metadb_handle_list_cref handles)
 
 void PlaybackStatistics::refresh(HashList hash_list)
 {
-	api()->dispatch_refresh(guids::metadb_index, hash_list);
+	if (hash_list.get_count() > 0)
+	{
+		api()->dispatch_refresh(guids::metadb_index, hash_list);
+	}
 }
 
 void PlaybackStatistics::refresh(metadb_handle_list_cref handles)

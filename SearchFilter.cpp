@@ -32,12 +32,12 @@ metadb_handle_list SearchFilter::get_items_from_index(const search_filter_v2::pt
 
 metadb_handle_list SearchFilter::get_items_legacy(const search_filter_v2::ptr& filter, metadb_handle_list_cref handles)
 {
-	metadb_handle_list ret(handles);
+	metadb_handle_list items(handles);
 	pfc::array_t<bool> mask;
-	mask.set_size(ret.get_count());
-	filter->test_multi(ret, mask.get_ptr());
-	ret.filter_mask(mask.get_ptr());
-	return ret;
+	mask.set_size(items.get_count());
+	filter->test_multi(items, mask.get_ptr());
+	items.filter_mask(mask.get_ptr());
+	return items;
 }
 
 search_filter_v2::ptr SearchFilter::get_filter(wil::zwstring_view query)

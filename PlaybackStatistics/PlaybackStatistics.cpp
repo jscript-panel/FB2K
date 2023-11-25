@@ -24,13 +24,20 @@ PlaybackStatistics::Fields PlaybackStatistics::get_fields(metadb_index_hash hash
 	{
 		try
 		{
-			stream_reader_formatter_simple_ref reader(temp.get_ptr(), temp.get_size());
 			Fields f;
+			stream_reader_formatter_simple_ref reader(temp.get_ptr(), temp.get_size());
+
 			reader >> f.first_played;
 			reader >> f.last_played;
 			reader >> f.loved;
 			reader >> f.playcount;
 			reader >> f.rating;
+
+			if (reader.get_remaining() >= sizeof(uint32_t))
+			{
+				reader >> f.skipcount;
+			}
+
 			return f;
 		}
 		catch (exception_io_data) {}
@@ -125,6 +132,7 @@ void PlaybackStatistics::set_fields(metadb_index_hash hash, const Fields& f, con
 	writer << f.loved;
 	writer << f.playcount;
 	writer << f.rating;
+	writer << f.skipcount;
 
 	if (transaction_ptr.is_valid())
 	{

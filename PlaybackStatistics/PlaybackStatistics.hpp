@@ -5,9 +5,9 @@ class PlaybackStatistics
 public:
 	struct Fields
 	{
-		uint32_t first_played{}, last_played{}, loved{}, playcount{}, rating{};
+		uint32_t first_played{}, last_played{}, loved{}, playcount{}, rating{}, skipcount{};
 
-		operator bool() const { return first_played || last_played || loved || playcount || rating; }
+		operator bool() const { return first_played || last_played || loved || playcount || rating || skipcount; }
 	};
 
 	struct TransactionScope

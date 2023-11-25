@@ -26,8 +26,9 @@ namespace
 					if (f.playcount > 0) callback.set_property(Component::name.data(), 0.0, "Playcount", pfc::format_uint(f.playcount));
 					if (f.loved > 0) callback.set_property(Component::name.data(), 1.0, "Loved", pfc::format_uint(f.loved));
 					if (f.rating > 0) callback.set_property(Component::name.data(), 2.0, "Rating", pfc::format_uint(f.rating));
-					if (f.first_played > 0) callback.set_property(Component::name.data(), 3.0, "First Played", Utils::format_timestamp(f.first_played));
-					if (f.last_played > 0) callback.set_property(Component::name.data(), 4.0, "Last Played", Utils::format_timestamp(f.last_played));
+					if (f.skipcount > 0) callback.set_property(Component::name.data(), 3.0, "Rating", pfc::format_uint(f.skipcount));
+					if (f.first_played > 0) callback.set_property(Component::name.data(), 4.0, "First Played", Utils::format_timestamp(f.first_played));
+					if (f.last_played > 0) callback.set_property(Component::name.data(), 5.0, "Last Played", Utils::format_timestamp(f.last_played));
 				}
 				else
 				{

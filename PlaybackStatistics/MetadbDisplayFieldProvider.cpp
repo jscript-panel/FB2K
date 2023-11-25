@@ -4,13 +4,14 @@ namespace
 {
 	using namespace std::literals::string_view_literals;
 
-	static std::array field_names =
+	static constexpr std::array field_names =
 	{
 		"jsp3_first_played"sv,
 		"jsp3_last_played"sv,
 		"jsp3_loved"sv,
 		"jsp3_playcount"sv,
 		"jsp3_rating"sv,
+		"jsp3_skipcount"sv,
 	};
 
 	class MetadbDisplayFieldProvider : public metadb_display_field_provider_v2
@@ -49,6 +50,10 @@ namespace
 			case 4:
 				if (f.rating == 0) return false;
 				out->write_int(titleformat_inputtypes::meta, f.rating);
+				return true;
+			case 5:
+				if (f.skipcount == 0) return false;
+				out->write_int(titleformat_inputtypes::meta, f.skipcount);
 				return true;
 			}
 			return false;

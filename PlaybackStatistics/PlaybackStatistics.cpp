@@ -98,7 +98,7 @@ void PlaybackStatistics::clear(metadb_handle_list_cref handles)
 	refresh(hash_list);
 }
 
-void PlaybackStatistics::refresh(HashList hash_list)
+void PlaybackStatistics::refresh(const HashList& hash_list)
 {
 	if (hash_list.get_count() > 0)
 	{

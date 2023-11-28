@@ -25,7 +25,7 @@ public:
 	static metadb_index_manager::ptr api();
 	static uint32_t get_total_playcount(metadb_handle_list_cref handles, track_property_provider_v5_info_source& source);
 	static void clear(metadb_handle_list_cref handles);
-	static void refresh(HashList hash_list);
+	static void refresh(const HashList& hash_list);
 	static void refresh(metadb_handle_list_cref handles);
 	static void set_fields(metadb_index_hash hash, const Fields& f, const metadb_index_transaction::ptr& transaction_ptr = dummy_transaction);
 

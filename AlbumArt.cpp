@@ -171,7 +171,7 @@ AlbumArt::Attach::Attach(Action action, metadb_handle_list_cref handles, const G
 
 void AlbumArt::Attach::init(threaded_process_callback::ptr callback, wil::zstring_view title)
 {
-	const auto flags = Component::get_threaded_process_flags();
+	const auto flags = Fb::get_threaded_process_flags();
 	threaded_process::get()->run_modeless(callback, flags, Fb::wnd(), title.data());
 }
 

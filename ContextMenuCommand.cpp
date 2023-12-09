@@ -58,5 +58,5 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, wil::zstring_vi
 
 bool ContextMenuCommand::match_command(wil::zstring_view what)
 {
-	return stricmp_utf8(m_command.c_str(), what.data()) == 0;
+	return compare_string(m_command, what);
 }

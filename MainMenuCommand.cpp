@@ -90,7 +90,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 
 bool MainMenuCommand::match_command(wil::zstring_view what)
 {
-	return stricmp_utf8(m_command.c_str(), what.data()) == 0;
+	return compare_string(m_command, what);
 }
 
 std::string MainMenuCommand::build_parent_path(GUID parent)
@@ -111,6 +111,5 @@ std::string MainMenuCommand::build_parent_path(GUID parent)
 		parent = group_ptr->get_parent();
 	}
 
-	auto reversed = strings | std::views::reverse;
-	return fmt::format("{}{}", fmt::join(reversed, "/"), "/");
+	return fmt::format("{}/", fmt::join(strings | std::views::reverse, "/"));
 };

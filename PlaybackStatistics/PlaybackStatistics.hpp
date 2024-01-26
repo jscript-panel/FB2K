@@ -29,5 +29,5 @@ public:
 	static void refresh(metadb_handle_list_cref handles);
 	static void set_fields(metadb_index_hash hash, const Fields& f, const metadb_index_transaction::ptr& transaction_ptr = dummy_transaction);
 
-	static inline const metadb_index_transaction::ptr dummy_transaction;
+	inline static const metadb_index_transaction::ptr dummy_transaction;
 };

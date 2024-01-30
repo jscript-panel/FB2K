@@ -64,7 +64,38 @@ bool TitleFormatHook::process_function(titleformat_text_out* out, const char* fu
 
 	if (process_font(out, func, params, found_flag)) return true;
 	if (process_country_flag(out, func, params, found_flag)) return true;
+	if (process_since(out, func, params, found_flag)) return true;
 	return false;
+}
+
+bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
+{
+	if (!compare_string(func, "jsp3_since")) return false;
+
+	if (m_param_count == 1)
+	{
+		const auto date_string = get_string(params, 0);
+		const auto wts = pfc::filetimestamp_from_string(date_string.c_str());
+
+		if (wts != filetimestamp_invalid)
+		{
+			found_flag = true;
+			const auto diff = init_time - pfc::fileTimeWtoU(wts);
+
+			if (diff < day_in_seconds)
+			{
+				out->write(titleformat_inputtypes::unknown, "0d");
+			}
+			else
+			{
+				const auto dbl = static_cast<double>(diff);
+				const auto since_string = pfc::format_time_ex(dbl, 0);
+				const auto d = since_string.find_first('d') + 1;
+				out->write(titleformat_inputtypes::unknown, since_string.subString(0, d));
+			}
+		}
+	}
+	return true;
 }
 
 std::string TitleFormatHook::get_string(titleformat_hook_function_params* params, size_t index)

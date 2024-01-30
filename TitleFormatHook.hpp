@@ -9,8 +9,12 @@ public:
 private:
 	bool process_font(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag);
 	bool process_country_flag(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag);
+	bool process_since(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag);
 	std::string get_string(titleformat_hook_function_params* params, size_t index);
 	size_t get_num(titleformat_hook_function_params* params, size_t index, size_t min, size_t max, size_t fallback);
 
 	size_t m_param_count{};
+
+	inline static const uint64_t init_time = pfc::fileTimeWtoU(pfc::fileTimeNow());
+	inline static constexpr uint64_t day_in_seconds = 24 * 60 * 60;
 };

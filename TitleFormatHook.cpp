@@ -81,8 +81,16 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 		{
 			found_flag = true;
 
+			const auto uts = pfc::fileTimeWtoU(wts);
+			uint64_t diff = uts < init_time ? init_time - uts : 0;
 			string8 str;
-			auto diff = init_time - pfc::fileTimeWtoU(wts);
+
+			if (diff < day_in_seconds)
+			{
+				out->write(titleformat_inputtypes::unknown, "0d");
+				return true;
+			}
+
 			bool include_days_weeks = true;
 
 			const auto years = diff / year_in_seconds;

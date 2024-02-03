@@ -3,6 +3,8 @@
 
 #include "CountryFlag.hpp"
 
+TitleFormatHook::TitleFormatHook(size_t playlistIndex) : m_playlistIndex(playlistIndex) {}
+
 bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
 	if (!compare_string(func, "country_flag")) return false;
@@ -22,10 +24,21 @@ bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char
 	return true;
 }
 
-bool TitleFormatHook::process_field(titleformat_text_out*, const char*, size_t, bool& found_flag)
+bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field, size_t, bool& found_flag)
 {
 	found_flag = false;
-	return false;
+	if (!compare_string(field, "jsp3_playlist_name")) return false;
+
+	found_flag = m_playlistIndex < Plman::api()->get_playlist_count();
+
+	if (found_flag)
+	{
+		string8 str;
+		Plman::api()->playlist_get_name(m_playlistIndex, str);
+		out->write(titleformat_inputtypes::unknown, str);
+	}
+
+	return true;
 }
 
 bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)

@@ -12,6 +12,7 @@ AlbumArt::AlbumArt(size_t id) : m_guid(get_guid(id)), m_api(album_art_manager_v2
 	try_stub();
 }
 
+#pragma region static
 AlbumArt::Data AlbumArt::path_to_data(wil::zwstring_view path)
 {
 	wil::com_ptr_t<IStream> stream;
@@ -66,6 +67,31 @@ IJSImage* AlbumArt::get_attached_image(const metadb_handle_ptr& handle, size_t i
 	return nullptr;
 }
 
+void AlbumArt::attach_image(metadb_handle_list_cref handles, size_t id, wil::zwstring_view path)
+{
+	const GUID guid = get_guid(id);
+	auto data = path_to_data(path);
+	if (data.is_valid())
+	{
+		auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
+		Attach::init(callback, "Attaching image...");
+	}
+}
+
+void AlbumArt::remove_attached_image(metadb_handle_list_cref handles, size_t id)
+{
+	const GUID guid = get_guid(id);
+	auto callback = fb2k::service_new<Attach>(Attach::Action::Remove, handles, guid);
+	Attach::init(callback, "Removing attached images...");
+}
+
+void AlbumArt::remove_all_attached_images(metadb_handle_list_cref handles)
+{
+	auto callback = fb2k::service_new<Attach>(Attach::Action::RemoveAll, handles);
+	Attach::init(callback, "Removing attached images...");
+}
+#pragma endregion
+
 IJSImage* AlbumArt::to_image(uint32_t max_size)
 {
 	wil::com_ptr_t<IWICBitmap> bitmap;
@@ -107,30 +133,6 @@ bool AlbumArt::try_now_playing()
 	}
 
 	return false;
-}
-
-void AlbumArt::attach_image(metadb_handle_list_cref handles, size_t id, wil::zwstring_view path)
-{
-	const GUID guid = get_guid(id);
-	auto data = path_to_data(path);
-	if (data.is_valid())
-	{
-		auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
-		Attach::init(callback, "Attaching image...");
-	}
-}
-
-void AlbumArt::remove_attached_image(metadb_handle_list_cref handles, size_t id)
-{
-	const GUID guid = get_guid(id);
-	auto callback = fb2k::service_new<Attach>(Attach::Action::Remove, handles, guid);
-	Attach::init(callback, "Removing attached images...");
-}
-
-void AlbumArt::remove_all_attached_images(metadb_handle_list_cref handles)
-{
-	auto callback = fb2k::service_new<Attach>(Attach::Action::RemoveAll, handles);
-	Attach::init(callback, "Removing attached images...");
 }
 
 void AlbumArt::set_path(const album_art_path_list::ptr& paths)

@@ -3,6 +3,7 @@
 
 PlaylistLock::PlaylistLock(uint32_t mask) : m_mask(mask) {}
 
+#pragma region static
 bool PlaylistLock::add(size_t playlistIndex, uint32_t mask)
 {
 	if (mask > 0 && !Plman::api()->playlist_lock_is_present(playlistIndex))
@@ -41,6 +42,7 @@ bool PlaylistLock::remove(size_t playlistIndex)
 
 	return ret;
 }
+#pragma endregion
 
 bool PlaylistLock::execute_default_action(size_t)
 {

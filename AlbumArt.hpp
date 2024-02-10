@@ -5,7 +5,7 @@ class AlbumArt
 public:
 	using Data = fb2k::memBlock::ptr;
 
-	AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub);
+	AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub = false);
 	AlbumArt(size_t id); // stub only
 
 	static Data path_to_data(wil::zwstring_view path);

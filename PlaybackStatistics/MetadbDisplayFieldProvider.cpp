@@ -33,11 +33,11 @@ namespace
 			{
 			case 0:
 				if (f.first_played == 0) return false;
-				out->write(titleformat_inputtypes::meta, Utils::format_timestamp(f.first_played));
+				out->write(titleformat_inputtypes::meta, PlaybackStatistics::timestamp_to_string(f.first_played));
 				return true;
 			case 1:
 				if (f.last_played == 0) return false;
-				out->write(titleformat_inputtypes::meta, Utils::format_timestamp(f.last_played));
+				out->write(titleformat_inputtypes::meta, PlaybackStatistics::timestamp_to_string(f.last_played));
 				return true;
 			case 2:
 				if (f.loved == 0) return false;

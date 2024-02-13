@@ -52,6 +52,12 @@ metadb_index_manager::ptr PlaybackStatistics::api()
 	return cached;
 }
 
+string8 PlaybackStatistics::timestamp_to_string(uint64_t ts)
+{
+	const uint64_t windows_time = pfc::fileTimeUtoW(ts);
+	return pfc::format_filetimestamp(windows_time);
+}
+
 uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles, track_property_provider_v5_info_source& source)
 {
 	HashSet hash_set;
@@ -73,6 +79,19 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 	}
 
 	return total;
+}
+
+uint32_t PlaybackStatistics::now()
+{
+	return to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
+}
+
+uint32_t PlaybackStatistics::string_to_timestamp(wil::zwstring_view str)
+{
+	const string8 ustr = from_wide(str);
+	const uint64_t windows_time = pfc::filetimestamp_from_string(ustr);
+	if (windows_time == filetimestamp_invalid) return UINT_MAX;
+	return to_uint(pfc::fileTimeWtoU(windows_time));
 }
 
 void PlaybackStatistics::clear(metadb_handle_list_cref handles)

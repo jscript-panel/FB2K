@@ -17,9 +17,8 @@ private:
 
 	size_t m_param_count{}, m_playlistIndex{};
 
-	inline static const uint64_t init_time = pfc::fileTimeWtoU(pfc::fileTimeNow());
-	inline static constexpr uint64_t day_in_seconds = 24 * 60 * 60;
-	inline static constexpr uint64_t week_in_seconds = 7 * day_in_seconds;
-	inline static constexpr uint64_t month_in_seconds = 30 * day_in_seconds;
-	inline static constexpr uint64_t year_in_seconds = 365 * day_in_seconds;
+	inline static constexpr uint32_t day_in_seconds = 24 * 60 * 60;
+	inline static constexpr uint32_t week_in_seconds = 7 * day_in_seconds;
+	inline static constexpr uint32_t month_in_seconds = 30 * day_in_seconds;
+	inline static constexpr uint32_t year_in_seconds = 365 * day_in_seconds;
 };

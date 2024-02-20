@@ -52,7 +52,7 @@ metadb_index_manager::ptr PlaybackStatistics::api()
 	return cached;
 }
 
-string8 PlaybackStatistics::timestamp_to_string(uint64_t ts)
+string8 PlaybackStatistics::timestamp_to_string(uint32_t ts)
 {
 	const uint64_t windows_time = pfc::fileTimeUtoW(ts);
 	return pfc::format_filetimestamp(windows_time);
@@ -86,11 +86,12 @@ uint32_t PlaybackStatistics::now()
 	return to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
 }
 
-uint32_t PlaybackStatistics::string_to_timestamp(wil::zwstring_view str)
+uint32_t PlaybackStatistics::string_to_timestamp(wil::zstring_view str)
 {
-	const string8 ustr = from_wide(str);
-	const uint64_t windows_time = pfc::filetimestamp_from_string(ustr);
+	if (str.empty()) return UINT_MAX;
+	const auto windows_time = pfc::filetimestamp_from_string(str.data());
 	if (windows_time == filetimestamp_invalid) return UINT_MAX;
+	if (windows_time < pfc::fileTimeUtoW(0) || windows_time > pfc::fileTimeUtoW(UINT_MAX)) return UINT_MAX;
 	return to_uint(pfc::fileTimeWtoU(windows_time));
 }
 

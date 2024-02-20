@@ -88,28 +88,27 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 	if (m_param_count == 1)
 	{
 		const auto date_string = get_string(params, 0);
-		const auto wts = pfc::filetimestamp_from_string(date_string.c_str());
+		const auto ts = PlaybackStatistics::string_to_timestamp(date_string);
+		const auto now = PlaybackStatistics::now();
 
-		if (wts != filetimestamp_invalid)
+		if (ts != UINT_MAX && ts < now)
 		{
 			found_flag = true;
-
-			const auto uts = pfc::fileTimeWtoU(wts);
-			uint64_t diff = uts < init_time ? init_time - uts : 0;
-			string8 str;
-
+			
+			uint32_t diff = now - ts;
 			if (diff < day_in_seconds)
 			{
 				out->write(titleformat_inputtypes::unknown, "0d");
 				return true;
 			}
 
-			bool include_days_weeks = true;
+			bool include_weeks_days = true;
+			string8 str;
 
 			const auto years = diff / year_in_seconds;
 			if (years > 0)
 			{
-				include_days_weeks = false;
+				include_weeks_days = false;
 				diff -= years * year_in_seconds;
 				str << years << "y ";
 			}
@@ -121,7 +120,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 				str << months << "m ";
 			}
 
-			if (include_days_weeks)
+			if (include_weeks_days)
 			{
 				const auto weeks = diff / week_in_seconds;
 				if (weeks > 0)

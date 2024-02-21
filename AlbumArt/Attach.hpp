@@ -4,7 +4,7 @@ class Attach : public threaded_process_callback
 {
 public:
 	enum class Action
-	{ 
+	{
 		Attach,
 		Remove,
 		RemoveAll

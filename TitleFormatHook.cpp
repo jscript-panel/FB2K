@@ -102,7 +102,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 			if (diff < day_in_seconds * 2)
 			{
 				const auto today_string = PlaybackStatistics::timestamp_to_string(now).subString(0, 10);
-				const auto yesterday_string = PlaybackStatistics::timestamp_to_string(now - day_in_seconds).subString(0, 1);
+				const auto yesterday_string = PlaybackStatistics::timestamp_to_string(now - day_in_seconds).subString(0, 10);
 
 				if (date_string.starts_with(today_string.get_ptr()))
 				{

@@ -94,16 +94,32 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 		if (ts != UINT_MAX && ts < now)
 		{
 			found_flag = true;
-			
-			uint32_t diff = now - ts;
-			if (diff < day_in_seconds)
-			{
-				out->write(titleformat_inputtypes::unknown, "0d");
-				return true;
-			}
 
 			bool include_weeks_days = true;
 			string8 str;
+			uint32_t diff = now - ts;
+
+			if (diff < day_in_seconds * 2)
+			{
+				const auto today_string = PlaybackStatistics::timestamp_to_string(now).subString(0, 10);
+				const auto yesterday_string = PlaybackStatistics::timestamp_to_string(now - day_in_seconds).subString(0, 1);
+
+				if (date_string.starts_with(today_string.get_ptr()))
+				{
+					str = "Today";
+				}
+				else if (date_string.starts_with(yesterday_string.get_ptr()))
+				{
+					str = "Yesterday";
+				}
+				else
+				{
+					str = "1d";
+				}
+
+				out->write(titleformat_inputtypes::unknown, str);
+				return true;
+			}
 
 			const auto years = diff / year_in_seconds;
 			if (years > 0)

@@ -29,24 +29,22 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 	const GUID guid = get_guid(id);
 	const string8 path = handle->get_path();
 	album_art_extractor::ptr ptr;
+	album_art_data_ptr data;
+	wil::com_ptr_t<IWICBitmap> bitmap;
 
 	if (!album_art_extractor::g_get_interface(ptr, path)) return nullptr;
 
 	try
 	{
 		auto instance = ptr->open(nullptr, path, fb2k::noAbort);
-		auto data = instance->query(guid, fb2k::noAbort);
-		wil::com_ptr_t<IWICBitmap> bitmap;
-
-		if SUCCEEDED(to_bitmap(data, bitmap))
-		{
-			const std::wstring wpath = wdisplay_path(path);
-			return new ComObject<JSImage>(bitmap, wpath);
-		}
+		data = instance->query(guid, fb2k::noAbort);
 	}
 	catch (...) {}
 
-	return nullptr;
+	if FAILED(to_bitmap(data, bitmap)) return nullptr;
+	
+	const std::wstring wpath = wdisplay_path(path);
+	return new ComObject<JSImage>(bitmap, wpath);
 }
 
 album_art_data_ptr AlbumArtStatic::path_to_data(wil::zwstring_view path)

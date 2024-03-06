@@ -23,8 +23,8 @@ public:
 	void on_playlist_remove() final {}
 	void show_ui() final {}
 
+private:
 	inline static std::unordered_map<uint64_t, playlist_lock::ptr> s_map;
 
-private:
 	uint32_t m_mask{};
 };

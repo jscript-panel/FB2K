@@ -21,11 +21,15 @@ public:
 		const uint32_t mask = Plman::api()->playlist_lock_get_filter_mask(playlistIndex);
 		if (WI_IsFlagSet(mask, playlist_lock::filter_add)) return;
 
-		Plman::api()->playlist_insert_items(playlistIndex, m_base, handles, pfc::bit_array_val(m_to_select));
 		if (m_to_select)
 		{
+			Plman::api()->playlist_insert_items(playlistIndex, m_base, handles, pfc::bit_array_true());
 			Plman::api()->set_active_playlist(playlistIndex);
 			Plman::api()->playlist_set_focus_item(playlistIndex, m_base);
+		}
+		else
+		{
+			Plman::api()->playlist_insert_items(playlistIndex, m_base, handles, pfc::bit_array_false());
 		}
 	}
 

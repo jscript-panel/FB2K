@@ -67,7 +67,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 			const size_t count = node->get_children_count();
 			path.end_with('/');
 
-			for (const size_t i : std::views::iota(0U, count))
+			for (const size_t i : std::views::iota(size_t{}, count))
 			{
 				mainmenu_node::ptr child = node->get_child(i);
 				if (execute_recur(child, path))

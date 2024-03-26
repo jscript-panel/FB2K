@@ -1,16 +1,43 @@
 #include "stdafx.hpp"
 #include "MainMenuCommand.hpp"
 
-MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(from_wide(command))
+MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(from_wide(command)) {}
+
+#pragma region static
+pfc::map_t<GUID, mainmenu_group::ptr> MainMenuCommand::get_group_guid_map()
 {
-	if (s_group_guid_map.get_count() == 0)
+	pfc::map_t<GUID, mainmenu_group::ptr> group_guid_map;
+
+	for (auto ptr : mainmenu_group::enumerate())
 	{
-		for (auto ptr : mainmenu_group::enumerate())
-		{
-			s_group_guid_map.set(ptr->get_guid(), ptr);
-		}
+		group_guid_map.set(ptr->get_guid(), ptr);
 	}
+
+	return group_guid_map;
 }
+
+std::string MainMenuCommand::build_parent_path(GUID parent)
+{
+	static const auto group_guid_map = get_group_guid_map();
+	Strings strings;
+
+	while (parent != pfc::guid_null)
+	{
+		mainmenu_group::ptr group_ptr = group_guid_map[parent];
+		mainmenu_group_popup::ptr group_popup_ptr;
+
+		if (group_ptr->cast(group_popup_ptr))
+		{
+			string8 str;
+			group_popup_ptr->get_display_string(str);
+			strings.emplace_back(str.get_ptr());
+		}
+		parent = group_ptr->get_parent();
+	}
+
+	return fmt::format("{}/", fmt::join(strings | std::views::reverse, "/"));
+};
+#pragma endregion
 
 bool MainMenuCommand::execute()
 {
@@ -92,24 +119,3 @@ bool MainMenuCommand::match_command(wil::zstring_view what)
 {
 	return compare_string(m_command, what);
 }
-
-std::string MainMenuCommand::build_parent_path(GUID parent)
-{
-	Strings strings;
-
-	while (parent != pfc::guid_null)
-	{
-		mainmenu_group::ptr group_ptr = s_group_guid_map[parent];
-		mainmenu_group_popup::ptr group_popup_ptr;
-
-		if (group_ptr->cast(group_popup_ptr))
-		{
-			string8 str;
-			group_popup_ptr->get_display_string(str);
-			strings.emplace_back(str.get_ptr());
-		}
-		parent = group_ptr->get_parent();
-	}
-
-	return fmt::format("{}/", fmt::join(strings | std::views::reverse, "/"));
-};

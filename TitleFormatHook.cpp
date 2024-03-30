@@ -91,7 +91,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 		const auto ts = PlaybackStatistics::string_to_timestamp(date_string);
 		const auto now = PlaybackStatistics::now();
 
-		if (ts != UINT_MAX && ts < now)
+		if (ts < now)
 		{
 			found_flag = true;
 

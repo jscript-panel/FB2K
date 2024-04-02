@@ -27,9 +27,7 @@ bool ContextMenuCommand::execute()
 
 bool ContextMenuCommand::execute_recur(contextmenu_node* parent, wil::zstring_view parent_path)
 {
-	const size_t count = parent->get_num_children();
-
-	for (const size_t i : std::views::iota(size_t{}, count))
+	for (const size_t i : std::views::iota(size_t{}, parent->get_num_children()))
 	{
 		contextmenu_node* child = parent->get_child(i);
 		std::string path(parent_path);

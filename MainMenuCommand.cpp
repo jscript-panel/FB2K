@@ -50,9 +50,8 @@ bool MainMenuCommand::execute()
 		ptr->cast(v2_ptr);
 
 		const std::string parent_path = build_parent_path(ptr->get_parent());
-		const uint32_t count = ptr->get_command_count();
 
-		for (const uint32_t i : std::views::iota(0U, count))
+		for (const uint32_t i : std::views::iota(0U, ptr->get_command_count()))
 		{
 			if (v2_ptr.is_valid() && v2_ptr->is_command_dynamic(i))
 			{
@@ -85,16 +84,18 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 	uint32_t flags{};
 	node->get_display(text, flags);
 
-	string8 path = fmt::format("{}{}", parent_path, text.get_ptr());
+	auto path = fmt::format("{}{}", parent_path, text.get_ptr());
 
 	switch (node->get_type())
 	{
 	case mainmenu_node::type_group:
 		{
-			const size_t count = node->get_children_count();
-			path.end_with('/');
+			if (!path.ends_with("/"))
+			{
+				path.append("/");
+			}
 
-			for (const size_t i : std::views::iota(size_t{}, count))
+			for (const size_t i : std::views::iota(size_t{}, node->get_children_count()))
 			{
 				mainmenu_node::ptr child = node->get_child(i);
 				if (execute_recur(child, path))

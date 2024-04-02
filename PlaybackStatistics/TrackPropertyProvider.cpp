@@ -14,8 +14,7 @@ namespace
 		{
 			if (callback.is_group_wanted(Component::name.data()))
 			{
-				const size_t count = handles.get_count();
-				if (count == 1)
+				if (handles.get_count() == 1)
 				{
 					auto rec = source.get_info(0);
 					if (rec.info.is_empty()) return;

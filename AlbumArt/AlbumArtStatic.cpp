@@ -85,11 +85,25 @@ HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Type type, album_art_data
 HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t<IWICBitmap>& bitmap)
 {
 	RETURN_HR_IF(E_FAIL, data.is_empty());
-	if SUCCEEDED(ImageHelpers::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
+	if SUCCEEDED(Img::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
 
 	wil::com_ptr_t<IStream> stream;
-	RETURN_IF_FAILED(IStreamHelpers::create_from_album_art_data(data, stream));
-	RETURN_IF_FAILED(ImageHelpers::istream_to_bitmap(stream.get(), bitmap));
+	RETURN_IF_FAILED(AlbumArtStatic::to_istream(data, stream));
+	RETURN_IF_FAILED(Img::istream_to_bitmap(stream.get(), bitmap));
+	return S_OK;
+}
+
+HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr_t<IStream>& stream)
+{
+	RETURN_HR_IF(E_FAIL, data.is_empty());
+
+	auto ptr = static_cast<const uint8_t*>(data->data());
+	const uint32_t size = to_uint(data->size());
+
+	auto tmp = SHCreateMemStream(ptr, size);
+	RETURN_HR_IF_NULL(E_FAIL, tmp);
+
+	stream.attach(tmp);
 	return S_OK;
 }
 
@@ -116,14 +130,30 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 	return new ComObject<JSImage>(bitmap, wpath);
 }
 
+album_art_data_ptr AlbumArtStatic::istream_to_data(IStream* stream)
+{
+	const auto size = Img::get_stream_size(stream);
+	if (size <= Component::max_image_size)
+	{
+		auto data = fb2k::service_new<album_art_data_impl>();
+		data->set_size(size);
+		ULONG bytes_read{};
+		if SUCCEEDED(stream->Read(data->get_ptr(), size, &bytes_read))
+		{
+			return data;
+		}
+	}
+	return album_art_data_ptr();
+}
+
 album_art_data_ptr AlbumArtStatic::path_to_data(wil::zwstring_view path)
 {
 	album_art_data_ptr data;
 	wil::com_ptr_t<IStream> stream;
 
-	if SUCCEEDED(IStreamHelpers::create_from_path(path, stream))
+	if SUCCEEDED(Img::path_to_istream(path, stream))
 	{
-		data = IStreamHelpers::to_album_art_data(stream.get());
+		data = istream_to_data(stream.get());
 	}
 
 	return data;

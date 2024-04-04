@@ -61,7 +61,7 @@ namespace
 
 		uint32_t get_field_count() final
 		{
-			return to_uint(field_names.size());
+			return js::to_uint(field_names.size());
 		}
 
 		void get_field_name(uint32_t index, pfc::string_base& out) final

@@ -11,7 +11,7 @@ HRESULT AlbumArtStatic::bitmap_to_jpg_data(IWICBitmap* bitmap, album_art_data_pt
 {
 	D2D1_SIZE_U size{};
 	RETURN_IF_FAILED(bitmap->GetSize(&size.width, &size.height));
-	auto rect = to_WICRect(size);
+	auto rect = js::to_WICRect(size);
 
 	wil::com_ptr_t<IStream> stream;
 	wil::com_ptr_t<IWICBitmapEncoder> encoder;
@@ -43,7 +43,7 @@ HRESULT AlbumArtStatic::bitmap_to_webp_data(IWICBitmap* bitmap, album_art_data_p
 {
 	D2D1_SIZE_U size{};
 	RETURN_IF_FAILED(bitmap->GetSize(&size.width, &size.height));
-	auto rect = to_WICRect(size);
+	auto rect = js::to_WICRect(size);
 
 	uint8_t* ptr{};
 	uint8_t* output{};
@@ -98,7 +98,7 @@ HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr_
 	RETURN_HR_IF(E_FAIL, data.is_empty());
 
 	auto ptr = static_cast<const uint8_t*>(data->data());
-	const uint32_t size = to_uint(data->size());
+	const uint32_t size = js::to_uint(data->size());
 
 	auto tmp = SHCreateMemStream(ptr, size);
 	RETURN_HR_IF_NULL(E_FAIL, tmp);
@@ -126,7 +126,7 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 
 	if FAILED(to_bitmap(data, bitmap)) return nullptr;
 	
-	const std::wstring wpath = wdisplay_path(path);
+	const std::wstring wpath = js::wdisplay_path(path);
 	return new ComObject<JSImage>(bitmap, wpath);
 }
 

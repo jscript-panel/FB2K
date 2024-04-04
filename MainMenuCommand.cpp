@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 #include "MainMenuCommand.hpp"
 
-MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(from_wide(command)) {}
+MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command)) {}
 
 #pragma region static
 pfc::map_t<GUID, mainmenu_group::ptr> MainMenuCommand::get_group_guid_map()
@@ -118,5 +118,5 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 
 bool MainMenuCommand::match_command(wil::zstring_view what)
 {
-	return compare_string(m_command, what);
+	return js::compare_string(m_command, what);
 }

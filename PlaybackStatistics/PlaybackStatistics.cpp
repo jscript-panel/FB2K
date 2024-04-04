@@ -81,7 +81,7 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 
 uint32_t PlaybackStatistics::now()
 {
-	return to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
+	return js::to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
 }
 
 uint32_t PlaybackStatistics::string_to_timestamp(wil::zstring_view str)
@@ -90,7 +90,7 @@ uint32_t PlaybackStatistics::string_to_timestamp(wil::zstring_view str)
 	const auto windows_time = pfc::filetimestamp_from_string(str.data());
 	if (windows_time == filetimestamp_invalid) return UINT_MAX;
 	if (windows_time < pfc::fileTimeUtoW(0) || windows_time > pfc::fileTimeUtoW(UINT_MAX)) return UINT_MAX;
-	return to_uint(pfc::fileTimeWtoU(windows_time));
+	return js::to_uint(pfc::fileTimeWtoU(windows_time));
 }
 
 void PlaybackStatistics::clear(metadb_handle_list_cref handles)

@@ -41,7 +41,7 @@ metadb_handle_list SearchFilter::get_items_legacy(const search_filter_v2::ptr& f
 
 search_filter_v2::ptr SearchFilter::get_filter(wil::zwstring_view query)
 {
-	const string8 uquery = from_wide(query);
+	const string8 uquery = js::from_wide(query);
 	search_filter_v2::ptr filter;
 
 	try

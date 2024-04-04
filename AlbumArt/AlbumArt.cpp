@@ -59,7 +59,7 @@ void AlbumArt::set_path(const album_art_path_list::ptr& paths)
 {
 	if (paths.is_valid() && paths->get_count() > 0)
 	{
-		m_path = wdisplay_path(paths->get_path(0));
+		m_path = js::wdisplay_path(paths->get_path(0));
 	}
 }
 

@@ -7,7 +7,7 @@ TitleFormatHook::TitleFormatHook(size_t playlistIndex) : m_playlistIndex(playlis
 
 bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!compare_string(func, "country_flag")) return false;
+	if (!js::compare_string(func, "country_flag")) return false;
 
 	if (m_param_count == 1)
 	{
@@ -27,7 +27,7 @@ bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char
 bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field, size_t, bool& found_flag)
 {
 	found_flag = false;
-	if (!compare_string(field, "jsp3_playlist_name")) return false;
+	if (!js::compare_string(field, "jsp3_playlist_name")) return false;
 
 	found_flag = m_playlistIndex < Plman::api()->get_playlist_count();
 
@@ -43,7 +43,7 @@ bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field
 
 bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!compare_string(func, "font")) return false;
+	if (!js::compare_string(func, "font")) return false;
 
 	static constexpr fmt::string_view bel = "\x7";
 	static constexpr fmt::string_view tab = "\t";
@@ -83,7 +83,7 @@ bool TitleFormatHook::process_function(titleformat_text_out* out, const char* fu
 
 bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!compare_string(func, "jsp3_since")) return false;
+	if (!js::compare_string(func, "jsp3_since")) return false;
 
 	if (m_param_count == 1)
 	{

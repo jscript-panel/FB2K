@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 #include "ContextMenuCommand.hpp"
 
-ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command) : m_command(from_wide(command))
+ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command))
 {
 	if (playback_control::get()->is_playing())
 	{
@@ -10,7 +10,7 @@ ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command) : m_command(f
 	}
 }
 
-ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command, metadb_handle_list_cref handles) : m_command(from_wide(command))
+ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command, metadb_handle_list_cref handles) : m_command(js::from_wide(command))
 {
 	if (handles.get_count() > 0)
 	{
@@ -56,5 +56,5 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, wil::zstring_vi
 
 bool ContextMenuCommand::match_command(wil::zstring_view what)
 {
-	return compare_string(m_command, what);
+	return js::compare_string(m_command, what);
 }

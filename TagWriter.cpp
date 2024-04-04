@@ -21,7 +21,7 @@ HRESULT TagWriter::from_json_array(JSON& arr)
 
 			info.meta_remove_field(name.c_str());
 
-			for (auto&& value : JSONHelper::to_strings(values))
+			for (auto&& value : js::json_to_strings(values))
 			{
 				info.meta_add(name.c_str(), value.c_str());
 			}
@@ -44,7 +44,7 @@ HRESULT TagWriter::from_json_object(JSON& obj)
 
 		FileInfoFilter::Tag tag;
 		tag.name = name;
-		tag.values = JSONHelper::to_strings(value);
+		tag.values = js::json_to_strings(value);
 		tags.emplace_back(tag);
 	}
 

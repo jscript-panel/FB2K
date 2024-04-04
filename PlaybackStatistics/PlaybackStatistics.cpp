@@ -20,6 +20,7 @@ PlaybackStatistics::Fields PlaybackStatistics::get_fields(metadb_index_hash hash
 {
 	mem_block_container_impl temp;
 	api()->get_user_data(guids::metadb_index, hash, temp);
+
 	if (temp.get_size() > 0)
 	{
 		try
@@ -42,6 +43,7 @@ PlaybackStatistics::Fields PlaybackStatistics::get_fields(metadb_index_hash hash
 		}
 		catch (exception_io_data) {}
 	}
+
 	return Fields();
 }
 

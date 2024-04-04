@@ -33,7 +33,7 @@ metadb_handle_list SearchFilter::get_items_from_index(const search_filter_v2::pt
 metadb_handle_list SearchFilter::get_items_legacy(const search_filter_v2::ptr& filter, metadb_handle_list_cref handles)
 {
 	metadb_handle_list items(handles);
-	auto mask = pfc_array<bool>(items.get_count());
+	auto mask = js::pfc_array<bool>(items.get_count());
 	filter->test_multi(items, mask.get_ptr());
 	items.filter_mask(mask.get_ptr());
 	return items;

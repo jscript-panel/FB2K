@@ -72,7 +72,7 @@ HRESULT AlbumArtStatic::check_id(size_t id)
 HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Type type, album_art_data_ptr& data)
 {
 	IWICBitmap* bitmap{};
-	RETURN_IF_FAILED(image->get(arg_helper(&bitmap)));
+	RETURN_IF_FAILED(image->get(js::arg_helper(&bitmap)));
 
 	if (type == Type::JPG)
 	{

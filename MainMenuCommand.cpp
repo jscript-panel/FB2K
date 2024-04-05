@@ -4,6 +4,24 @@
 MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command)) {}
 
 #pragma region static
+bool MainMenuCommand::is_valid(const mainmenu_commands::ptr& ptr, uint32_t index)
+{
+	string8 display;
+	uint32_t flags{};
+	
+	if (!ptr->get_display(index, display, flags))
+	{
+		return false;
+	}
+
+	if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
+	{
+		return false;
+	}
+
+	return true;
+}
+
 pfc::map_t<GUID, mainmenu_group::ptr> MainMenuCommand::get_group_guid_map()
 {
 	pfc::map_t<GUID, mainmenu_group::ptr> group_guid_map;
@@ -36,7 +54,7 @@ std::string MainMenuCommand::build_parent_path(GUID parent)
 	}
 
 	return fmt::format("{}/", fmt::join(strings | std::views::reverse, "/"));
-};
+}
 #pragma endregion
 
 bool MainMenuCommand::execute()
@@ -65,12 +83,17 @@ bool MainMenuCommand::execute()
 			{
 				string8 name;
 				ptr->get_name(i, name);
-
 				const std::string path = parent_path + name.get_ptr();
+
 				if (match_command(path))
 				{
-					ptr->execute(i, nullptr);
-					return true;
+					if (is_valid(ptr, i))
+					{
+						ptr->execute(i, nullptr);
+						return true;
+					}
+
+					return false;
 				}
 			}
 		}
@@ -108,6 +131,11 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 	case mainmenu_node::type_command:
 		if (match_command(path))
 		{
+			if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
+			{
+				return false;
+			}
+
 			node->execute(nullptr);
 			return true;
 		}

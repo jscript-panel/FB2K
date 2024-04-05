@@ -88,7 +88,7 @@ HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t
 	if SUCCEEDED(Img::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
 
 	wil::com_ptr_t<IStream> stream;
-	RETURN_IF_FAILED(AlbumArtStatic::to_istream(data, stream));
+	RETURN_IF_FAILED(to_istream(data, stream));
 	RETURN_IF_FAILED(Img::istream_to_bitmap(stream.get(), bitmap));
 	return S_OK;
 }

@@ -34,3 +34,23 @@ private:
 	std::vector<size_t> m_selected, m_not_selected_before, m_not_selected_after, m_order;
 	size_t m_pos{};
 };
+
+class SelectedIndexesCallback : public playlist_manager::enum_items_callback
+{
+public:
+	SelectedIndexesCallback(size_t count)
+	{
+		m_selected.reserve(count);
+	}
+
+	bool on_item(size_t index, const metadb_handle_ptr&, bool selected) final
+	{
+		if (selected)
+		{
+			m_selected.emplace_back(index);
+		}
+		return true;
+	}
+
+	std::vector<size_t> m_selected;
+};

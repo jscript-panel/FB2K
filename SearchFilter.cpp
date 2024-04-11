@@ -39,6 +39,17 @@ metadb_handle_list SearchFilter::get_items_legacy(const search_filter_v2::ptr& f
 	return items;
 }
 
+metadb_handle_list SearchFilter::get_playlist_items(size_t playlistIndex, wil::zwstring_view query)
+{
+	auto items = Plman::get_all_items(playlistIndex);
+	if (query.empty()) return items;
+
+	auto filter = get_filter(query);
+	if (filter.is_empty()) return items;
+
+	return get_items_legacy(filter, items);
+}
+
 search_filter_v2::ptr SearchFilter::get_filter(wil::zwstring_view query)
 {
 	const string8 uquery = js::from_wide(query);

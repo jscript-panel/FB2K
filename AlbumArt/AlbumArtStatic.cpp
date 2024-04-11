@@ -125,7 +125,7 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 	catch (...) {}
 
 	if FAILED(to_bitmap(data, bitmap)) return nullptr;
-	
+
 	const std::wstring wpath = js::wdisplay_path(path);
 	return new ComObject<JSImage>(bitmap, wpath);
 }
@@ -164,7 +164,7 @@ void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, wi
 	const GUID guid = get_guid(id);
 	auto data = path_to_data(path);
 	if (data.is_empty()) return;
-	
+
 	auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
 	Attach::init(callback, "Attaching image...");
 }

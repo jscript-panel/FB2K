@@ -8,7 +8,7 @@ bool MainMenuCommand::is_valid(const mainmenu_commands::ptr& ptr, uint32_t index
 {
 	string8 display;
 	uint32_t flags{};
-	
+
 	if (!ptr->get_display(index, display, flags))
 	{
 		return false;

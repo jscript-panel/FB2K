@@ -66,15 +66,15 @@ HRESULT AlbumArtStatic::bitmap_to_webp_data(IWICBitmap* bitmap, album_art_data_p
 HRESULT AlbumArtStatic::check_id(size_t id)
 {
 	if (id < guids::art.size()) return S_OK;
-	return E_INVALIDARG;
+	return DISP_E_BADINDEX;
 }
 
-HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Type type, album_art_data_ptr& data)
+HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Format format, album_art_data_ptr& data)
 {
 	IWICBitmap* bitmap{};
 	RETURN_IF_FAILED(image->get(js::arg_helper(&bitmap)));
 
-	if (type == Type::JPG)
+	if (format == Format::JPG)
 	{
 		return bitmap_to_jpg_data(bitmap, data);
 	}
@@ -169,12 +169,12 @@ void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, wi
 	Attach::init(callback, "Attaching image...");
 }
 
-void AlbumArtStatic::attach_image2(metadb_handle_list_cref handles, size_t id, Type type, IJSImage* image)
+void AlbumArtStatic::attach_image2(metadb_handle_list_cref handles, size_t id, Format format, IJSImage* image)
 {
 	const GUID guid = get_guid(id);
 	album_art_data_ptr data;
 
-	if FAILED(image_to_data(image, type, data)) return;
+	if FAILED(image_to_data(image, format, data)) return;
 
 	auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
 	Attach::init(callback, "Attaching image...");

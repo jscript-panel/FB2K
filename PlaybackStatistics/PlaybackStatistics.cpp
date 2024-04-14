@@ -89,9 +89,12 @@ uint32_t PlaybackStatistics::now()
 uint32_t PlaybackStatistics::string_to_timestamp(wil::zstring_view str)
 {
 	if (str.empty()) return UINT_MAX;
+
+	static const auto lower_limit = pfc::fileTimeUtoW(1);
+	static const auto upper_limit = pfc::fileTimeUtoW(UINT_MAX);
+
 	const auto windows_time = pfc::filetimestamp_from_string(str.data());
-	if (windows_time == filetimestamp_invalid) return UINT_MAX;
-	if (windows_time < pfc::fileTimeUtoW(0) || windows_time > pfc::fileTimeUtoW(UINT_MAX)) return UINT_MAX;
+	if (windows_time == filetimestamp_invalid || windows_time < lower_limit || windows_time > upper_limit) return UINT_MAX;
 	return js::to_uint(pfc::fileTimeWtoU(windows_time));
 }
 

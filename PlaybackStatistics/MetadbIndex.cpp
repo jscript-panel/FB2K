@@ -5,6 +5,7 @@ MetadbIndex::MetadbIndex() : m_hasher(hasher_md5::get())
 	titleformat_compiler::get()->compile_safe(m_obj, Component::pin_to.get());
 }
 
+#pragma region static
 MetadbIndex* MetadbIndex::client()
 {
 	static MetadbIndex* cached = new service_impl_single_t<MetadbIndex>();
@@ -26,6 +27,7 @@ void MetadbIndex::init()
 		FB2K_console_formatter() << fmt::format("{}: Playback Statistics critical initialisation failure: {}", Component::name, e.what());
 	}
 }
+#pragma endregion
 
 metadb_index_hash MetadbIndex::transform(const file_info& info, const playable_location& location)
 {

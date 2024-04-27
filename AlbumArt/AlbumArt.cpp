@@ -22,8 +22,8 @@ IJSImage* AlbumArt::to_image(uint32_t max_size)
 
 bool AlbumArt::try_normal()
 {
-	auto handles = pfc::list_single_ref_t<metadb_handle_ptr>(m_handle);
-	auto guids = pfc::list_single_ref_t<GUID>(m_guid);
+	auto handles = js::pfc_list(m_handle);
+	auto guids = js::pfc_list(m_guid);
 
 	try
 	{

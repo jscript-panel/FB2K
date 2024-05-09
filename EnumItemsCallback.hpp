@@ -22,12 +22,12 @@ public:
 		return true;
 	}
 
-	bool reorder(size_t playlistIndex)
+	void reorder(size_t playlistIndex)
 	{
 		m_order.append_range(m_not_selected_before);
 		m_order.append_range(m_selected);
 		m_order.append_range(m_not_selected_after);
-		return Plman::api()->playlist_reorder_items(playlistIndex, m_order.data(), m_order.size());
+		Plman::api()->playlist_reorder_items(playlistIndex, m_order.data(), m_order.size());
 	}
 
 private:

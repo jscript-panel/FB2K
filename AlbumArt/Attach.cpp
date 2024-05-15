@@ -6,8 +6,7 @@ Attach::Attach(Action action, metadb_handle_list_cref handles, const GUID& guid,
 #pragma region static
 void Attach::init(threaded_process_callback::ptr callback, wil::zstring_view title)
 {
-	const auto flags = Fb::get_threaded_process_flags();
-	threaded_process::get()->run_modeless(callback, flags, Fb::wnd(), title.data());
+	threaded_process::get()->run_modeless(callback, threaded_process::flag_silent, Fb::wnd(), title.data());
 }
 #pragma endregion
 

@@ -30,7 +30,7 @@ HRESULT TagWriter::from_json_array(JSON& arr)
 
 	auto list = pfc::ptr_list_const_array_t<const file_info, file_info_impl*>(infos.data(), infos.size());
 	auto filter = fb2k::service_new<file_info_filter_impl>(m_handles, list);
-	metadb_io_v2::get()->update_info_async(m_handles, filter, Fb::wnd(), get_flags(), nullptr);
+	metadb_io_v2::get()->update_info_async(m_handles, filter, Fb::wnd(), metadb_io_v2::op_flag_silent, nullptr);
 	return S_OK;
 }
 
@@ -49,12 +49,6 @@ HRESULT TagWriter::from_json_object(JSON& obj)
 	}
 
 	auto filter = fb2k::service_new<FileInfoFilter>(tags);
-	metadb_io_v2::get()->update_info_async(m_handles, filter, Fb::wnd(), get_flags(), nullptr);
+	metadb_io_v2::get()->update_info_async(m_handles, filter, Fb::wnd(), metadb_io_v2::op_flag_silent, nullptr);
 	return S_OK;
-}
-
-uint32_t TagWriter::get_flags()
-{
-	if (Fb::is_v2()) return metadb_io_v2::op_flag_silent;
-	return metadb_io_v2::op_flag_delay_ui;
 }

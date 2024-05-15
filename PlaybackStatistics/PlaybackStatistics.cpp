@@ -2,18 +2,12 @@
 
 PlaybackStatistics::TransactionScope::TransactionScope()
 {
-	if (Fb::is_v2())
-	{
-		ptr = metadb_index_manager_v2::get()->begin_transaction();
-	}
+	ptr = metadb_index_manager_v2::get()->begin_transaction();
 }
 
 PlaybackStatistics::TransactionScope::~TransactionScope()
 {
-	if (ptr.is_valid())
-	{
-		ptr->commit();
-	}
+	ptr->commit();
 }
 
 PlaybackStatistics::Fields PlaybackStatistics::get_fields(metadb_index_hash hash)

@@ -13,27 +13,27 @@ bool PlaylistLock::add(size_t playlistIndex, uint32_t mask)
 	if (!Plman::api()->playlist_lock_install(playlistIndex, lock)) return false;
 
 	Plman::api()->playlist_set_property_int(playlistIndex, guids::playlist_lock_mask, mask);
-	const auto id = Plman::get_id(playlistIndex);
-	s_map.emplace(id, lock);
+	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
+	s_map.set(g, lock);
 	return true;
 }
 
 bool PlaylistLock::is_my_lock(size_t playlistIndex)
 {
-	const auto id = Plman::get_id(playlistIndex);
-	return s_map.contains(id);
+	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
+	return s_map.contains(g);
 }
 
 bool PlaylistLock::remove(size_t playlistIndex)
 {
-	const auto id = Plman::get_id(playlistIndex);
-	const auto it = s_map.find(id);
+	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
+	const auto it = s_map.find(g);
 
-	if (it == s_map.end()) return false;
+	if (it.is_empty()) return false;
 
-	const bool ret = Plman::api()->playlist_lock_uninstall(playlistIndex, it->second);
+	const bool ret = Plman::api()->playlist_lock_uninstall(playlistIndex, it->m_value);
 	Plman::api()->playlist_remove_property(playlistIndex, guids::playlist_lock_mask);
-	s_map.erase(id);
+	s_map.remove(g);
 	return ret;
 }
 #pragma endregion

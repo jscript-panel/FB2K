@@ -61,10 +61,10 @@ STDMETHODIMP DropTargetImpl::Drop(IDataObject* pDataObj, DWORD grfKeyState, POIN
 
 		if (m_action->m_effect != DROPEFFECT_NONE)
 		{
-			const auto id = Plman::get_id(m_action->m_playlistIndex);
-			if (id != Plman::invalid_id)
+			const auto g = Plman::api()->playlist_get_guid(m_action->m_playlistIndex);
+			if (g != pfc::guid_null)
 			{
-				auto ptr = fb2k::service_new<ProcessLocationsNotify>(id, m_action->m_base, m_action->m_to_select);
+				auto ptr = fb2k::service_new<ProcessLocationsNotify>(g, m_action->m_base, m_action->m_to_select);
 				playlist_incoming_item_filter_v2::get()->process_dropped_files_async(pDataObj, playlist_incoming_item_filter_v2::op_flag_delay_ui, m_panel->GetWnd(), ptr);
 				*pdwEffect = m_action->m_effect;
 				return S_OK;

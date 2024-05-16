@@ -24,7 +24,7 @@ public:
 	void show_ui() final {}
 
 private:
-	inline static std::unordered_map<uint64_t, playlist_lock::ptr> s_map;
+	inline static pfc::map_t<GUID, playlist_lock::ptr> s_map;
 
 	uint32_t m_mask{};
 };

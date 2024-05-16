@@ -3,7 +3,7 @@
 class ProcessLocationsNotify : public process_locations_notify
 {
 public:
-	ProcessLocationsNotify(uint64_t id, size_t base, bool to_select) : m_id(id), m_base(base), m_to_select(to_select) {}
+	ProcessLocationsNotify(const GUID& guid, size_t base, bool to_select) : m_guid(guid), m_base(base), m_to_select(to_select) {}
 
 	static void init(const pfc::string_list_impl& list, process_locations_notify::ptr ptr)
 	{
@@ -15,7 +15,7 @@ public:
 
 	void on_completion(metadb_handle_list_cref handles) final
 	{
-		const size_t playlistIndex = Plman::find_by_id(m_id);
+		const size_t playlistIndex = Plman::api()->find_playlist_by_guid(m_guid);
 		if (playlistIndex == SIZE_MAX) return;
 
 		const uint32_t mask = Plman::api()->playlist_lock_get_filter_mask(playlistIndex);
@@ -34,7 +34,7 @@ public:
 	}
 
 private:
+	GUID m_guid;
 	bool m_to_select{};
 	size_t m_base{};
-	uint64_t m_id{};
 };

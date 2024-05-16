@@ -5,21 +5,37 @@ metadb_handle_list SearchFilter::get_library_items(wil::zwstring_view query)
 {
 	metadb_handle_list items;
 	library_manager::get()->get_all_items(items);
-	if (query.empty()) return items;
+	if (items.get_count() == 0 || query.empty()) return items;
 
 	auto filter = get_filter(query);
 	if (filter.is_empty()) return items;
 
-	return get_items(filter, items);
+	auto index = search_index_manager::get()->get_library_index();
+	return get_items(filter, index);
 }
 
-metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, metadb_handle_list_cref handles)
+metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, const search_index::ptr& index)
 {
-	metadb_handle_list items(handles);
-	auto mask = js::pfc_array<bool>(items.get_count());
-	filter->test_multi(items, mask.get_ptr());
-	items.filter_mask(mask.get_ptr());
-	return items;
+	auto arr = index->search(filter, nullptr, 0, fb2k::noAbort);
+	return arr->as_list_of<metadb_handle>();
+}
+
+metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, metadb_handle_list handles)
+{
+	// not using search_index_manager::create_index because original order is not preserved
+	// do it the old way
+
+	auto mask = js::pfc_array<bool>(handles.get_count());
+	filter->test_multi(handles, mask.get_ptr());
+	handles.filter_mask(mask.get_ptr());
+	return handles;
+}
+
+metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, size_t playlistIndex)
+{
+	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
+	auto index = search_index_manager::get()->create_playlist_index(g);
+	return get_items(filter, index);
 }
 
 search_filter_v2::ptr SearchFilter::get_filter(wil::zwstring_view query)

@@ -85,11 +85,11 @@ HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Format format, album_art_
 HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t<IWICBitmap>& bitmap)
 {
 	RETURN_HR_IF(E_FAIL, data.is_empty());
-	if SUCCEEDED(Img::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
+	if SUCCEEDED(js::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
 
 	wil::com_ptr_t<IStream> stream;
 	RETURN_IF_FAILED(to_istream(data, stream));
-	RETURN_IF_FAILED(Img::istream_to_bitmap(stream.get(), bitmap));
+	RETURN_IF_FAILED(js::istream_to_bitmap(stream.get(), bitmap));
 	return S_OK;
 }
 
@@ -132,7 +132,7 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 
 album_art_data_ptr AlbumArtStatic::istream_to_data(IStream* stream)
 {
-	const auto size = Img::get_stream_size(stream);
+	const auto size = js::get_stream_size(stream);
 	if (size <= Component::max_image_size)
 	{
 		auto data = fb2k::service_new<album_art_data_impl>();
@@ -151,7 +151,7 @@ album_art_data_ptr AlbumArtStatic::path_to_data(wil::zwstring_view path)
 	album_art_data_ptr data;
 	wil::com_ptr_t<IStream> stream;
 
-	if SUCCEEDED(Img::path_to_istream(path, stream))
+	if SUCCEEDED(js::path_to_istream(path, stream))
 	{
 		data = istream_to_data(stream.get());
 	}

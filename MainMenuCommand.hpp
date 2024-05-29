@@ -8,7 +8,7 @@ public:
 	bool execute();
 
 private:
-	static bool is_valid(const mainmenu_commands::ptr& ptr, uint32_t index);
+	static bool is_disabled(const mainmenu_commands::ptr& ptr, uint32_t index);
 	static pfc::map_t<GUID, mainmenu_group::ptr> get_group_guid_map();
 	static std::string build_parent_path(GUID parent);
 

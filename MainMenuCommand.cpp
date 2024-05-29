@@ -4,22 +4,13 @@
 MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command)) {}
 
 #pragma region static
-bool MainMenuCommand::is_valid(const mainmenu_commands::ptr& ptr, uint32_t index)
+bool MainMenuCommand::is_disabled(const mainmenu_commands::ptr& ptr, uint32_t index)
 {
 	string8 display;
 	uint32_t flags{};
+	ptr->get_display(index, display, flags);
 
-	if (!ptr->get_display(index, display, flags))
-	{
-		return false;
-	}
-
-	if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
-	{
-		return false;
-	}
-
-	return true;
+	return WI_IsFlagSet(flags, mainmenu_commands::flag_disabled);
 }
 
 pfc::map_t<GUID, mainmenu_group::ptr> MainMenuCommand::get_group_guid_map()
@@ -87,13 +78,13 @@ bool MainMenuCommand::execute()
 
 				if (match_command(path))
 				{
-					if (is_valid(ptr, i))
+					if (is_disabled(ptr, i))
 					{
-						ptr->execute(i, nullptr);
-						return true;
+						return false;
 					}
 
-					return false;
+					ptr->execute(i, nullptr);
+					return true;
 				}
 			}
 		}

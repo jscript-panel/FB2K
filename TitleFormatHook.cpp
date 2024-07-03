@@ -27,18 +27,29 @@ bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char
 bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field, size_t, bool& found_flag)
 {
 	found_flag = false;
-	if (!js::compare_string(field, "jsp3_playlist_name")) return false;
 
-	found_flag = m_playlistIndex < Plman::api()->get_playlist_count();
-
-	if (found_flag)
+	if (js::compare_string(field, "jsp3_playlist_name"))
 	{
-		string8 str;
-		Plman::api()->playlist_get_name(m_playlistIndex, str);
-		out->write(titleformat_inputtypes::unknown, str);
+		found_flag = m_playlistIndex < Plman::api()->get_playlist_count();
+
+		if (found_flag)
+		{
+			string8 str;
+			Plman::api()->playlist_get_name(m_playlistIndex, str);
+			out->write(titleformat_inputtypes::unknown, str);
+		}
+
+		return true;
+	}
+	else if (js::compare_string(field, "fb2k_profile_path"))
+	{
+		found_flag = true;
+		static const string8 path = js::from_wide(Fb::get_profile_path());
+		out->write(titleformat_inputtypes::unknown, path);
+		return true;
 	}
 
-	return true;
+	return false;
 }
 
 bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)

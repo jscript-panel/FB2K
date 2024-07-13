@@ -146,7 +146,7 @@ album_art_data_ptr AlbumArtStatic::istream_to_data(IStream* stream)
 	return album_art_data_ptr();
 }
 
-album_art_data_ptr AlbumArtStatic::path_to_data(wil::zwstring_view path)
+album_art_data_ptr AlbumArtStatic::path_to_data(std::wstring_view path)
 {
 	album_art_data_ptr data;
 	wil::com_ptr_t<IStream> stream;
@@ -159,7 +159,7 @@ album_art_data_ptr AlbumArtStatic::path_to_data(wil::zwstring_view path)
 	return data;
 }
 
-void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, wil::zwstring_view path)
+void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, std::wstring_view path)
 {
 	const GUID guid = get_guid(id);
 	auto data = path_to_data(path);

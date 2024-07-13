@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 #include "MainMenuCommand.hpp"
 
-MainMenuCommand::MainMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command)) {}
+MainMenuCommand::MainMenuCommand(std::wstring_view command) : m_command(js::from_wide(command)) {}
 
 #pragma region static
 bool MainMenuCommand::is_disabled(const mainmenu_commands::ptr& ptr, uint32_t index)
@@ -92,7 +92,7 @@ bool MainMenuCommand::execute()
 	return false;
 }
 
-bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view parent_path)
+bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view parent_path)
 {
 	string8 text;
 	uint32_t flags{};
@@ -135,7 +135,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, wil::zstring_view p
 	return false;
 }
 
-bool MainMenuCommand::match_command(wil::zstring_view what)
+bool MainMenuCommand::match_command(std::string_view what)
 {
 	return js::compare_string(m_command, what);
 }

@@ -4,7 +4,7 @@
 Attach::Attach(Action action, metadb_handle_list_cref handles, const GUID& guid, const album_art_data_ptr& data) : m_action(action), m_handles(handles), m_guid(guid), m_data(data) {}
 
 #pragma region static
-void Attach::init(threaded_process_callback::ptr callback, wil::zstring_view title)
+void Attach::init(threaded_process_callback::ptr callback, std::string_view title)
 {
 	threaded_process::get()->run_modeless(callback, threaded_process::flag_silent, Fb::wnd(), title.data());
 }

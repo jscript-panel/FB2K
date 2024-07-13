@@ -80,7 +80,7 @@ uint32_t PlaybackStatistics::now()
 	return js::to_uint(pfc::fileTimeWtoU(pfc::fileTimeNow()));
 }
 
-uint32_t PlaybackStatistics::string_to_timestamp(wil::zstring_view str)
+uint32_t PlaybackStatistics::string_to_timestamp(std::string_view str)
 {
 	if (str.empty()) return UINT_MAX;
 

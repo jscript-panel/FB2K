@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 #include "SearchFilter.hpp"
 
-metadb_handle_list SearchFilter::get_library_items(wil::zwstring_view query)
+metadb_handle_list SearchFilter::get_library_items(std::wstring_view query)
 {
 	metadb_handle_list items;
 	library_manager::get()->get_all_items(items);
@@ -38,7 +38,7 @@ metadb_handle_list SearchFilter::get_items(const search_filter_v2::ptr& filter, 
 	return get_items(filter, index);
 }
 
-search_filter_v2::ptr SearchFilter::get_filter(wil::zwstring_view query)
+search_filter_v2::ptr SearchFilter::get_filter(std::wstring_view query)
 {
 	const string8 uquery = js::from_wide(query);
 	search_filter_v2::ptr filter;

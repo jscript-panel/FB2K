@@ -1,7 +1,7 @@
 #include "stdafx.hpp"
 #include "ContextMenuCommand.hpp"
 
-ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command) : m_command(js::from_wide(command))
+ContextMenuCommand::ContextMenuCommand(std::wstring_view command) : m_command(js::from_wide(command))
 {
 	if (playback_control::get()->is_playing())
 	{
@@ -10,7 +10,7 @@ ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command) : m_command(j
 	}
 }
 
-ContextMenuCommand::ContextMenuCommand(wil::zwstring_view command, metadb_handle_list_cref handles) : m_command(js::from_wide(command))
+ContextMenuCommand::ContextMenuCommand(std::wstring_view command, metadb_handle_list_cref handles) : m_command(js::from_wide(command))
 {
 	if (handles.get_count() > 0)
 	{
@@ -25,7 +25,7 @@ bool ContextMenuCommand::execute()
 	return execute_recur(m_cm->get_root());
 }
 
-bool ContextMenuCommand::execute_recur(contextmenu_node* parent, wil::zstring_view parent_path)
+bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_view parent_path)
 {
 	for (const size_t i : std::views::iota(size_t{}, parent->get_num_children()))
 	{
@@ -59,7 +59,7 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, wil::zstring_vi
 	return false;
 }
 
-bool ContextMenuCommand::match_command(wil::zstring_view what)
+bool ContextMenuCommand::match_command(std::string_view what)
 {
 	return js::compare_string(m_command, what);
 }

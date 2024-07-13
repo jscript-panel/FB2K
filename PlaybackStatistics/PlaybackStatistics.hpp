@@ -26,7 +26,7 @@ public:
 	static string8 timestamp_to_string(uint32_t ts);
 	static uint32_t get_total_playcount(metadb_handle_list_cref handles, track_property_provider_v5_info_source& source);
 	static uint32_t now();
-	static uint32_t string_to_timestamp(wil::zstring_view str);
+	static uint32_t string_to_timestamp(std::string_view str);
 	static void clear(metadb_handle_list_cref handles);
 	static void refresh(const HashList& hash_list);
 	static void refresh(metadb_handle_list_cref handles);

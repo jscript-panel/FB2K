@@ -12,7 +12,7 @@ public:
 
 	Attach(Action action, metadb_handle_list_cref handles, const GUID& guid = pfc::guid_null, const album_art_data_ptr& data = album_art_data_ptr());
 
-	static void init(threaded_process_callback::ptr callback, wil::zstring_view title);
+	static void init(threaded_process_callback::ptr callback, std::string_view title);
 
 	void run(threaded_process_status& status, abort_callback& abort) final;
 

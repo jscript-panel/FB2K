@@ -58,6 +58,7 @@ bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, 
 
 	static constexpr fmt::string_view bel = "\x7";
 	static constexpr fmt::string_view tab = "\t";
+	static const auto DPI = QueryScreenDPI(Fb::wnd());
 
 	if (m_param_count == 0)
 	{
@@ -67,7 +68,7 @@ bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, 
 	else if (m_param_count >= 2 && m_param_count <= 6)
 	{
 		const auto name = get_string(params, 0);
-		const auto size = get_num(params, 1, 8, 144, 12);
+		const auto size = get_num(params, 1, 8, 144, 12) * DPI / 72;
 		const auto weight = get_num(params, 2, 100, 950, 400);
 		const auto style = get_num(params, 3, 0, 2, 0);
 		const auto underline = get_num(params, 4, 0, 1, 0);

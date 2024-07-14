@@ -159,7 +159,7 @@ album_art_data_ptr AlbumArtStatic::path_to_data(std::wstring_view path)
 	return data;
 }
 
-void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, std::wstring_view path)
+void AlbumArtStatic::attach_from_path(metadb_handle_list_cref handles, size_t id, std::wstring_view path)
 {
 	const GUID guid = get_guid(id);
 	auto data = path_to_data(path);
@@ -169,7 +169,7 @@ void AlbumArtStatic::attach_image(metadb_handle_list_cref handles, size_t id, st
 	Attach::init(callback, "Attaching image...");
 }
 
-void AlbumArtStatic::attach_image2(metadb_handle_list_cref handles, size_t id, Format format, IJSImage* image)
+void AlbumArtStatic::attach_from_image(metadb_handle_list_cref handles, size_t id, Format format, IJSImage* image)
 {
 	const GUID guid = get_guid(id);
 	album_art_data_ptr data;

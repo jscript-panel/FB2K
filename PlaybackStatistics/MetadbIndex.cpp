@@ -24,7 +24,8 @@ void MetadbIndex::init()
 	catch (const std::exception& e)
 	{
 		api->remove(guids::metadb_index);
-		FB2K_console_formatter() << fmt::format("{}: Playback Statistics critical initialisation failure: {}", Component::name, e.what());
+		const auto msg = fmt::format("Playback Statistics critical initialisation failure: {}", e.what());
+		Component::log(msg);
 	}
 }
 #pragma endregion

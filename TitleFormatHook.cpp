@@ -44,7 +44,7 @@ bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field
 	else if (js::compare_string(field, "fb2k_profile_path"))
 	{
 		found_flag = true;
-		static const string8 path = js::from_wide(Fb::get_profile_path());
+		static const string8 path = js::from_wide(Path::profile());
 		out->write(titleformat_inputtypes::unknown, path);
 		return true;
 	}

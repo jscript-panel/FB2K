@@ -41,7 +41,7 @@ bool AlbumArt::try_normal()
 bool AlbumArt::try_now_playing()
 {
 	const std::string path = m_handle->get_path();
-	if (m_guid == album_art_ids::cover_front && core_api::is_main_thread() && !path.starts_with("file://") && path == Fb::get_now_playing_path())
+	if (m_guid == album_art_ids::cover_front && core_api::is_main_thread() && !path.starts_with("file://") && path == Path::now_playing())
 	{
 		auto info = now_playing_album_art_notify_manager_v2::get()->current_v2();
 		if (info)
@@ -59,7 +59,7 @@ void AlbumArt::set_path(const album_art_path_list::ptr& paths)
 {
 	if (paths.is_valid() && paths->get_count() > 0)
 	{
-		m_path = js::wdisplay_path(paths->get_path(0));
+		m_path = Path::wdisplay(paths->get_path(0));
 	}
 }
 

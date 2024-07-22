@@ -126,7 +126,7 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 
 	if FAILED(to_bitmap(data, bitmap)) return nullptr;
 
-	const std::wstring wpath = js::wdisplay_path(path);
+	const std::wstring wpath = Path::wdisplay(path);
 	return new ComObject<JSImage>(bitmap, wpath);
 }
 

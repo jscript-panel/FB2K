@@ -84,7 +84,7 @@ HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Format format, album_art_
 
 HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t<IWICBitmap>& bitmap)
 {
-	RETURN_HR_IF(E_FAIL, data.is_empty());
+	RETURN_HR_IF_EXPECTED(E_FAIL, data.is_empty());
 	if SUCCEEDED(js::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
 
 	wil::com_ptr_t<IStream> stream;
@@ -95,7 +95,7 @@ HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t
 
 HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr_t<IStream>& stream)
 {
-	RETURN_HR_IF(E_FAIL, data.is_empty());
+	RETURN_HR_IF_EXPECTED(E_FAIL, data.is_empty());
 
 	auto ptr = static_cast<const uint8_t*>(data->data());
 	const uint32_t size = js::to_uint(data->size());

@@ -107,7 +107,6 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 		{
 			found_flag = true;
 
-			bool include_weeks_days = true;
 			string8 str;
 			uint32_t diff = now - ts;
 
@@ -128,39 +127,40 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 				{
 					str = "1d";
 				}
-
-				out->write(titleformat_inputtypes::unknown, str);
-				return true;
 			}
-
-			const auto years = diff / year_in_seconds;
-			if (years > 0)
+			else
 			{
-				include_weeks_days = false;
-				diff -= years * year_in_seconds;
-				str << years << "y ";
-			}
+				bool include_weeks_days = true;
 
-			const auto months = diff / month_in_seconds;
-			if (months > 0)
-			{
-				diff -= months * month_in_seconds;
-				str << months << "m ";
-			}
-
-			if (include_weeks_days)
-			{
-				const auto weeks = diff / week_in_seconds;
-				if (weeks > 0)
+				const auto years = diff / year_in_seconds;
+				if (years > 0)
 				{
-					diff -= weeks * week_in_seconds;
-					str << weeks << "w ";
+					include_weeks_days = false;
+					diff -= years * year_in_seconds;
+					str << years << "y ";
 				}
 
-				const auto days = diff / day_in_seconds;
-				if (days > 0)
+				const auto months = diff / month_in_seconds;
+				if (months > 0)
 				{
-					str << days << "d";
+					diff -= months * month_in_seconds;
+					str << months << "m ";
+				}
+
+				if (include_weeks_days)
+				{
+					const auto weeks = diff / week_in_seconds;
+					if (weeks > 0)
+					{
+						diff -= weeks * week_in_seconds;
+						str << weeks << "w ";
+					}
+
+					const auto days = diff / day_in_seconds;
+					if (days > 0)
+					{
+						str << days << "d";
+					}
 				}
 			}
 

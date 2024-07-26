@@ -178,9 +178,9 @@ std::string TitleFormatHook::get_string(titleformat_hook_function_params* params
 		size_t len{};
 		params->get_param(index, str, len);
 
-		return std::string(str, len);
+		return { str, len };
 	}
-	return std::string();
+	return {};
 }
 
 size_t TitleFormatHook::get_num(titleformat_hook_function_params* params, size_t index, size_t min, size_t max, size_t fallback)

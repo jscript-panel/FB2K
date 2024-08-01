@@ -7,7 +7,8 @@ TitleFormatHook::TitleFormatHook(size_t playlistIndex) : m_playlistIndex(playlis
 
 bool TitleFormatHook::process_country_flag(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!js::compare_string(func, "country_flag")) return false;
+	if (!js::compare_string(func, "country_flag"))
+		return false;
 
 	if (m_param_count == 1)
 	{
@@ -54,7 +55,8 @@ bool TitleFormatHook::process_field(titleformat_text_out* out, const char* field
 
 bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!js::compare_string(func, "font")) return false;
+	if (!js::compare_string(func, "font"))
+		return false;
 
 	static constexpr fmt::string_view bel = "\x7";
 	static constexpr fmt::string_view tab = "\t";
@@ -87,15 +89,22 @@ bool TitleFormatHook::process_function(titleformat_text_out* out, const char* fu
 	found_flag = false;
 	m_param_count = params->get_param_count();
 
-	if (process_font(out, func, params, found_flag)) return true;
-	if (process_country_flag(out, func, params, found_flag)) return true;
-	if (process_since(out, func, params, found_flag)) return true;
+	if (process_font(out, func, params, found_flag))
+		return true;
+
+	if (process_country_flag(out, func, params, found_flag))
+		return true;
+
+	if (process_since(out, func, params, found_flag))
+		return true;
+
 	return false;
 }
 
 bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func, titleformat_hook_function_params* params, bool& found_flag)
 {
-	if (!js::compare_string(func, "jsp3_since")) return false;
+	if (!js::compare_string(func, "jsp3_since"))
+		return false;
 
 	if (m_param_count == 1)
 	{
@@ -188,7 +197,8 @@ size_t TitleFormatHook::get_num(titleformat_hook_function_params* params, size_t
 	if (index < m_param_count)
 	{
 		const auto value = params->get_param_uint(index);
-		if (value >= min && value <= max) return value;
+		if (value >= min && value <= max)
+			return value;
 	}
 	return fallback;
 }

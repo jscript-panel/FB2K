@@ -20,7 +20,9 @@ public:
 
 		if (!WI_IsFlagSet(grfKeyState, MK_LBUTTON))
 		{
-			if (m_effect == DROPEFFECT_NONE) return DRAGDROP_S_CANCEL;
+			if (m_effect == DROPEFFECT_NONE)
+				return DRAGDROP_S_CANCEL;
+
 			return DRAGDROP_S_DROP;
 		}
 

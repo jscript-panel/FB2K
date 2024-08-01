@@ -21,7 +21,9 @@ ContextMenuCommand::ContextMenuCommand(std::wstring_view command, metadb_handle_
 
 bool ContextMenuCommand::execute()
 {
-	if (m_cm.is_empty()) return false;
+	if (m_cm.is_empty())
+		return false;
+
 	return execute_recur(m_cm->get_root());
 }
 

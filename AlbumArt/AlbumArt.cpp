@@ -15,8 +15,13 @@ AlbumArt::AlbumArt(size_t id) : m_guid(AlbumArtStatic::get_guid(id)), m_api(albu
 IJSImage* AlbumArt::to_image(uint32_t max_size)
 {
 	wil::com_ptr_t<IWICBitmap> bitmap;
-	if FAILED(AlbumArtStatic::to_bitmap(m_data, bitmap)) return nullptr;
-	if FAILED(js::fit_to(max_size, bitmap)) return nullptr;
+
+	if FAILED(AlbumArtStatic::to_bitmap(m_data, bitmap))
+		return nullptr;
+
+	if FAILED(js::fit_to(max_size, bitmap))
+		return nullptr;
+
 	return new ComObject<JSImage>(bitmap, m_path);
 }
 

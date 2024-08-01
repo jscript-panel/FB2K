@@ -5,10 +5,12 @@ metadb_handle_list SearchFilter::get_library_items(std::wstring_view query)
 {
 	metadb_handle_list items;
 	library_manager::get()->get_all_items(items);
-	if (items.get_count() == 0 || query.empty()) return items;
+	if (items.get_count() == 0 || query.empty())
+		return items;
 
 	auto filter = get_filter(query);
-	if (filter.is_empty()) return items;
+	if (filter.is_empty())
+		return items;
 
 	auto index = search_index_manager::get()->get_library_index();
 	return get_items(filter, index);

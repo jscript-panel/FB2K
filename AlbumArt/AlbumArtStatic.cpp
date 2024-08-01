@@ -55,7 +55,8 @@ HRESULT AlbumArtStatic::bitmap_to_webp_data(IWICBitmap* bitmap, album_art_data_p
 	RETURN_IF_FAILED(lock->GetStride(&stride));
 
 	const size_t new_size = WebPEncodeBGRA(ptr, rect.Width, rect.Height, static_cast<int>(stride), 95.f, &output);
-	if (new_size == 0) return E_FAIL;
+	if (new_size == 0)
+		return E_FAIL;
 
 	data = album_art_data_impl::g_create(output, new_size);
 	WebPFree(output);
@@ -65,7 +66,9 @@ HRESULT AlbumArtStatic::bitmap_to_webp_data(IWICBitmap* bitmap, album_art_data_p
 
 HRESULT AlbumArtStatic::check_id(size_t id)
 {
-	if (id < guids::art.size()) return S_OK;
+	if (id < guids::art.size())
+		return S_OK;
+
 	return DISP_E_BADINDEX;
 }
 
@@ -85,7 +88,8 @@ HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Format format, album_art_
 HRESULT AlbumArtStatic::to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t<IWICBitmap>& bitmap)
 {
 	RETURN_HR_IF_EXPECTED(E_FAIL, data.is_empty());
-	if SUCCEEDED(js::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap)) return S_OK;
+	if SUCCEEDED(js::libwebp_data_to_bitmap(static_cast<const uint8_t*>(data->data()), data->size(), bitmap))
+		return S_OK;
 
 	wil::com_ptr_t<IStream> stream;
 	RETURN_IF_FAILED(to_istream(data, stream));
@@ -115,7 +119,8 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 	album_art_data_ptr data;
 	wil::com_ptr_t<IWICBitmap> bitmap;
 
-	if (!album_art_extractor::g_get_interface(ptr, path)) return nullptr;
+	if (!album_art_extractor::g_get_interface(ptr, path))
+		return nullptr;
 
 	try
 	{
@@ -124,7 +129,8 @@ IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, si
 	}
 	catch (...) {}
 
-	if FAILED(to_bitmap(data, bitmap)) return nullptr;
+	if FAILED(to_bitmap(data, bitmap))
+		return nullptr;
 
 	const std::wstring wpath = Path::wdisplay(path);
 	return new ComObject<JSImage>(bitmap, wpath);

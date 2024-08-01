@@ -6,11 +6,15 @@ PlaylistLock::PlaylistLock(uint32_t mask) : m_mask(mask) {}
 #pragma region static
 bool PlaylistLock::add(size_t playlistIndex, uint32_t mask)
 {
-	if (mask == 0U) return false;
-	if (Plman::api()->playlist_lock_is_present(playlistIndex)) return false;
+	if (mask == 0U)
+		return false;
+
+	if (Plman::api()->playlist_lock_is_present(playlistIndex))
+		return false;
 
 	auto lock = fb2k::service_new<PlaylistLock>(mask);
-	if (!Plman::api()->playlist_lock_install(playlistIndex, lock)) return false;
+	if (!Plman::api()->playlist_lock_install(playlistIndex, lock))
+		return false;
 
 	Plman::api()->playlist_set_property_int(playlistIndex, guids::playlist_lock_mask, mask);
 	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
@@ -29,7 +33,8 @@ bool PlaylistLock::remove(size_t playlistIndex)
 	const auto g = Plman::api()->playlist_get_guid(playlistIndex);
 	const auto it = s_map.find(g);
 
-	if (it.is_empty()) return false;
+	if (it.is_empty())
+		return false;
 
 	const bool ret = Plman::api()->playlist_lock_uninstall(playlistIndex, it->m_value);
 	Plman::api()->playlist_remove_property(playlistIndex, guids::playlist_lock_mask);

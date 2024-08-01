@@ -24,7 +24,8 @@ namespace
 
 		bool process_field_v2(uint32_t index, metadb_handle* handle, const metadb_v2::rec_t& rec, titleformat_text_out* out) final
 		{
-			if (rec.info.is_empty()) return false;
+			if (rec.info.is_empty())
+				return false;
 
 			const auto hash = MetadbIndex::client()->transform(rec.info->info(), handle->get_location());
 			const auto f = PlaybackStatistics::get_fields(hash);
@@ -32,27 +33,39 @@ namespace
 			switch (index)
 			{
 			case 0:
-				if (f.first_played == 0) return false;
+				if (f.first_played == 0)
+					return false;
+
 				out->write(titleformat_inputtypes::meta, PlaybackStatistics::timestamp_to_string(f.first_played));
 				return true;
 			case 1:
-				if (f.last_played == 0) return false;
+				if (f.last_played == 0)
+					return false;
+
 				out->write(titleformat_inputtypes::meta, PlaybackStatistics::timestamp_to_string(f.last_played));
 				return true;
 			case 2:
-				if (f.loved == 0) return false;
+				if (f.loved == 0)
+					return false;
+
 				out->write_int(titleformat_inputtypes::meta, f.loved);
 				return true;
 			case 3:
-				if (f.playcount == 0) return false;
+				if (f.playcount == 0)
+					return false;
+
 				out->write_int(titleformat_inputtypes::meta, f.playcount);
 				return true;
 			case 4:
-				if (f.rating == 0) return false;
+				if (f.rating == 0)
+					return false;
+
 				out->write_int(titleformat_inputtypes::meta, f.rating);
 				return true;
 			case 5:
-				if (f.skipcount == 0) return false;
+				if (f.skipcount == 0)
+					return false;
+
 				out->write_int(titleformat_inputtypes::meta, f.skipcount);
 				return true;
 			}

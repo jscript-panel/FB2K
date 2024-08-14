@@ -2,8 +2,12 @@
 
 AlbumArt::AlbumArt(const metadb_handle_ptr& handle, size_t id, bool want_stub) : m_handle(handle), m_guid(AlbumArtStatic::get_guid(id)), m_api(album_art_manager_v2::get())
 {
-	if (try_now_playing()) return;
-	if (try_normal()) return;
+	if (try_now_playing())
+		return;
+
+	if (try_normal())
+		return;
+
 	if (want_stub) try_stub();
 }
 

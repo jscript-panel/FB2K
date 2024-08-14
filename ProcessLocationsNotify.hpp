@@ -16,10 +16,12 @@ public:
 	void on_completion(metadb_handle_list_cref handles) final
 	{
 		const size_t playlistIndex = Plman::api()->find_playlist_by_guid(m_guid);
-		if (playlistIndex == SIZE_MAX) return;
+		if (playlistIndex == SIZE_MAX)
+			return;
 
 		const uint32_t mask = Plman::api()->playlist_lock_get_filter_mask(playlistIndex);
-		if (WI_IsFlagSet(mask, playlist_lock::filter_add)) return;
+		if (WI_IsFlagSet(mask, playlist_lock::filter_add))
+			return;
 
 		if (m_to_select)
 		{

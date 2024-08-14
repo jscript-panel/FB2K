@@ -11,7 +11,8 @@ public:
 
 	void run() final
 	{
-		if (m_handle.is_empty()) return;
+		if (m_handle.is_empty())
+			return;
 
 		auto album_art = AlbumArt(m_handle, m_id);
 		IJSImage* image = album_art.to_image(m_max_size);

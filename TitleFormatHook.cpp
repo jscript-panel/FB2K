@@ -60,7 +60,7 @@ bool TitleFormatHook::process_font(titleformat_text_out* out, const char* func, 
 
 	static constexpr fmt::string_view bel = "\x7";
 	static constexpr fmt::string_view tab = "\t";
-	static const auto DPI = QueryScreenDPI(Fb::wnd());
+	static const auto DPI = QueryScreenDPI(core_api::get_main_window());
 
 	if (m_param_count == 0)
 	{

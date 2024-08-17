@@ -76,7 +76,7 @@ void AlbumArt::show_viewer()
 {
 	if (m_data.is_valid())
 	{
-		fb2k::imageViewer::get()->show(Fb::wnd(), m_data);
+		fb2k::imageViewer::get()->show(core_api::get_main_window(), m_data);
 	}
 	else
 	{

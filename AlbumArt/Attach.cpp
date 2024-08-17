@@ -6,7 +6,7 @@ Attach::Attach(Action action, metadb_handle_list_cref handles, const GUID& guid,
 #pragma region static
 void Attach::init(threaded_process_callback::ptr callback, std::string_view title)
 {
-	threaded_process::get()->run_modeless(callback, threaded_process::flag_silent, Fb::wnd(), title.data());
+	threaded_process::get()->run_modeless(callback, threaded_process::flag_silent, core_api::get_main_window(), title.data());
 }
 #pragma endregion
 

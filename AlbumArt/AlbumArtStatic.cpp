@@ -111,29 +111,24 @@ HRESULT AlbumArtStatic::to_istream(const album_art_data_ptr& data, wil::com_ptr_
 	return S_OK;
 }
 
-IJSImage* AlbumArtStatic::get_attached_image(const metadb_handle_ptr& handle, size_t id)
+album_art_data_ptr AlbumArtStatic::get_embedded(const metadb_handle_ptr& handle, size_t id)
 {
 	const GUID guid = get_guid(id);
 	const string8 path = handle->get_path();
 	album_art_extractor::ptr ptr;
 	album_art_data_ptr data;
-	wil::com_ptr_t<IWICBitmap> bitmap;
 
-	if (!album_art_extractor::g_get_interface(ptr, path))
-		return nullptr;
-
-	try
+	if (album_art_extractor::g_get_interface(ptr, path))
 	{
-		auto instance = ptr->open(nullptr, path, fb2k::noAbort);
-		data = instance->query(guid, fb2k::noAbort);
+		try
+		{
+			auto instance = ptr->open(nullptr, path, fb2k::noAbort);
+			data = instance->query(guid, fb2k::noAbort);
+		}
+		catch (...) {}
 	}
-	catch (...) {}
 
-	if FAILED(to_bitmap(data, bitmap))
-		return nullptr;
-
-	const std::wstring wpath = Path::wdisplay(path);
-	return new ComObject<JSImage>(bitmap, wpath);
+	return data;
 }
 
 album_art_data_ptr AlbumArtStatic::istream_to_data(IStream* stream)
@@ -199,4 +194,12 @@ void AlbumArtStatic::remove_all_attached_images(metadb_handle_list_cref handles)
 {
 	auto callback = fb2k::service_new<Attach>(Attach::Action::RemoveAll, handles);
 	Attach::init(callback, "Removing attached images...");
+}
+
+void AlbumArtStatic::show_viewer(const album_art_data_ptr& data)
+{
+	if (data.is_valid())
+	{
+		fb2k::imageViewer::get()->show(core_api::get_main_window(), data);
+	}
 }

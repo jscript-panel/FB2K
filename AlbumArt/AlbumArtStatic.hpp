@@ -16,11 +16,12 @@ public:
 	static HRESULT image_to_data(IJSImage* image, Format format, album_art_data_ptr& data);
 	static HRESULT to_bitmap(const album_art_data_ptr& data, wil::com_ptr_t<IWICBitmap>& bitmap);
 	static HRESULT to_istream(const album_art_data_ptr& data, wil::com_ptr_t<IStream>& stream);
-	static IJSImage* get_attached_image(const metadb_handle_ptr& handle, size_t id);
+	static album_art_data_ptr get_embedded(const metadb_handle_ptr& handle, size_t id);
 	static album_art_data_ptr istream_to_data(IStream* stream);
 	static album_art_data_ptr path_to_data(std::wstring_view path);
 	static void attach_from_path(metadb_handle_list_cref handles, size_t id, std::wstring_view path);
 	static void attach_from_image(metadb_handle_list_cref handles, size_t id, Format format, IJSImage* image);
 	static void remove_attached_image(metadb_handle_list_cref handles, size_t id);
 	static void remove_all_attached_images(metadb_handle_list_cref handles);
+	static void show_viewer(const album_art_data_ptr& data);
 };

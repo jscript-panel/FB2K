@@ -8,7 +8,7 @@ public:
 	AlbumArt(size_t id); // stub only
 
 	IJSImage* to_image(uint32_t max_size = 0U);
-	void show_viewer();
+	album_art_data_ptr get_data();
 
 private:
 	bool try_normal();

@@ -29,6 +29,11 @@ IJSImage* AlbumArt::to_image(uint32_t max_size)
 	return new ComObject<JSImage>(bitmap, m_path);
 }
 
+album_art_data_ptr AlbumArt::get_data()
+{
+	return m_data;
+}
+
 bool AlbumArt::try_normal()
 {
 	auto handles = js::pfc_list(m_handle);
@@ -69,20 +74,6 @@ void AlbumArt::set_path(const album_art_path_list::ptr& paths)
 	if (paths.is_valid() && paths->get_count() > 0)
 	{
 		m_path = Path::wdisplay(paths->get_path(0));
-	}
-}
-
-void AlbumArt::show_viewer()
-{
-	if (m_data.is_valid())
-	{
-		fb2k::imageViewer::get()->show(core_api::get_main_window(), m_data);
-	}
-	else
-	{
-		const auto name = album_art_ids::capitalized_name_of(m_guid);
-		const auto msg = fmt::format("{} not found.", name);
-		Component::popup(msg);
 	}
 }
 

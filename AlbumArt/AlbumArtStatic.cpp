@@ -131,30 +131,31 @@ album_art_data_ptr AlbumArtStatic::get_embedded(const metadb_handle_ptr& handle,
 	return data;
 }
 
-album_art_data_ptr AlbumArtStatic::istream_to_data(IStream* stream)
+album_art_data_ptr AlbumArtStatic::to_data(IStream* stream)
 {
 	const auto size = js::get_stream_size(stream);
+
 	if (size <= Component::max_image_size)
 	{
 		auto data = fb2k::service_new<album_art_data_impl>();
 		data->set_size(size);
 		ULONG bytes_read{};
+
 		if SUCCEEDED(stream->Read(data->get_ptr(), size, &bytes_read))
-		{
 			return data;
-		}
 	}
+
 	return album_art_data_ptr();
 }
 
-album_art_data_ptr AlbumArtStatic::path_to_data(std::wstring_view path)
+album_art_data_ptr AlbumArtStatic::to_data(std::wstring_view path)
 {
 	album_art_data_ptr data;
 	wil::com_ptr_t<IStream> stream;
 
-	if SUCCEEDED(js::path_to_istream(path, stream))
+	if SUCCEEDED(FileHelper(path).read(stream))
 	{
-		data = istream_to_data(stream.get());
+		data = to_data(stream.get());
 	}
 
 	return data;
@@ -163,7 +164,7 @@ album_art_data_ptr AlbumArtStatic::path_to_data(std::wstring_view path)
 void AlbumArtStatic::attach_from_path(metadb_handle_list_cref handles, size_t id, std::wstring_view path)
 {
 	const GUID guid = get_guid(id);
-	auto data = path_to_data(path);
+	auto data = to_data(path);
 	if (data.is_empty())
 		return;
 

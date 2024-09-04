@@ -19,6 +19,7 @@ public:
 			if (index < m_pos) m_not_selected_before.emplace_back(index);
 			else m_not_selected_after.emplace_back(index);
 		}
+
 		return true;
 	}
 
@@ -49,6 +50,7 @@ public:
 		{
 			m_selected.emplace_back(index);
 		}
+
 		return true;
 	}
 

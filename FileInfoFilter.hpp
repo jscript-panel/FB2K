@@ -23,6 +23,7 @@ public:
 				info.meta_add(name.c_str(), value.c_str());
 			}
 		}
+
 		return true;
 	}
 

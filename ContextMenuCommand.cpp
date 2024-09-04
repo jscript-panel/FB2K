@@ -40,17 +40,14 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_vie
 		case contextmenu_item_node::type_group:
 			path.append("/");
 			if (execute_recur(child, path))
-			{
 				return true;
-			}
+
 			break;
 		case contextmenu_item_node::type_command:
 			if (match_command(path))
 			{
 				if (WI_IsAnyFlagSet(child->get_display_flags(), contextmenu_item_node::FLAG_DISABLED_GRAYED))
-				{
 					return false;
-				}
 
 				child->execute();
 				return true;

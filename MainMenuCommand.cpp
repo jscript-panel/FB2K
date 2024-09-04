@@ -41,6 +41,7 @@ std::string MainMenuCommand::build_parent_path(GUID parent)
 			group_popup_ptr->get_display_string(str);
 			strings.emplace_back(str.get_ptr());
 		}
+
 		parent = group_ptr->get_parent();
 	}
 
@@ -66,9 +67,7 @@ bool MainMenuCommand::execute()
 			{
 				mainmenu_node::ptr node = v2_ptr->dynamic_instantiate(i);
 				if (execute_recur(node, parent_path))
-				{
 					return true;
-				}
 			}
 			else
 			{
@@ -79,9 +78,7 @@ bool MainMenuCommand::execute()
 				if (match_command(path))
 				{
 					if (is_disabled(ptr, i))
-					{
 						return false;
-					}
 
 					ptr->execute(i, nullptr);
 					return true;
@@ -113,9 +110,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view pa
 			{
 				mainmenu_node::ptr child = node->get_child(i);
 				if (execute_recur(child, path))
-				{
 					return true;
-				}
 			}
 			break;
 		}
@@ -123,9 +118,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view pa
 		if (match_command(path))
 		{
 			if (WI_IsFlagSet(flags, mainmenu_commands::flag_disabled))
-			{
 				return false;
-			}
 
 			node->execute(nullptr);
 			return true;

@@ -69,6 +69,7 @@ namespace
 				out->write_int(titleformat_inputtypes::meta, f.skipcount);
 				return true;
 			}
+
 			return false;
 		}
 

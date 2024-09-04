@@ -14,9 +14,7 @@ public:
 	STDMETHODIMP QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState) final
 	{
 		if (fEscapePressed || WI_IsAnyFlagSet(grfKeyState, MK_RBUTTON | MK_MBUTTON))
-		{
 			return DRAGDROP_S_CANCEL;
-		}
 
 		if (!WI_IsFlagSet(grfKeyState, MK_LBUTTON))
 		{

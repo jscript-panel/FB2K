@@ -12,7 +12,8 @@ void OptimiseLayout::run(threaded_process_status& status, abort_callback& abort)
 	for (auto&& [index, handle] : std::views::enumerate(m_handles))
 	{
 		const string8 path = handle->get_path();
-		if (!paths.emplace(path).second) continue;
+		if (!paths.emplace(path).second)
+			continue;
 
 		status.set_progress(index + 1, count);
 		status.set_item_path(path);
@@ -22,7 +23,8 @@ void OptimiseLayout::run(threaded_process_status& status, abort_callback& abort)
 			auto lock = api->acquire_write(path, abort);
 			for (auto ptr : file_format_sanitizer::enumerate())
 			{
-				if (ptr->sanitize_file(path, m_minimise, abort)) break;
+				if (ptr->sanitize_file(path, m_minimise, abort))
+					break;
 			}
 		}
 		catch (...) {}

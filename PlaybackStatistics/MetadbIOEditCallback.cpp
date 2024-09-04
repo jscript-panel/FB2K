@@ -20,11 +20,15 @@ namespace
 					const auto old_hash = client->transform(*before[i], location);
 					const auto new_hash = client->transform(*after[i], location);
 
-					if (old_hash == new_hash) continue;
-					if (!hash_set.emplace(new_hash).second) continue;
+					if (old_hash == new_hash)
+						continue;
+
+					if (!hash_set.emplace(new_hash).second)
+						continue;
 
 					const auto f = PlaybackStatistics::get_fields(old_hash);
-					if (!f) continue;
+					if (!f)
+						continue;
 
 					PlaybackStatistics::set_fields(new_hash, f, scope.ptr);
 					hash_list.add_item(new_hash);

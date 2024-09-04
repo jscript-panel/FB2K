@@ -78,9 +78,7 @@ HRESULT AlbumArtStatic::image_to_data(IJSImage* image, Format format, album_art_
 	RETURN_IF_FAILED(image->get(js::arg_helper(&bitmap)));
 
 	if (format == Format::JPG)
-	{
 		return bitmap_to_jpg_data(bitmap, data);
-	}
 
 	return bitmap_to_webp_data(bitmap, data);
 }
@@ -165,11 +163,12 @@ void AlbumArtStatic::attach_from_path(metadb_handle_list_cref handles, size_t id
 {
 	const GUID guid = get_guid(id);
 	auto data = to_data(path);
-	if (data.is_empty())
-		return;
 
-	auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
-	Attach::init(callback, "Attaching image...");
+	if (data.is_valid())
+	{
+		auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
+		Attach::init(callback, "Attaching image...");
+	}
 }
 
 void AlbumArtStatic::attach_from_image(metadb_handle_list_cref handles, size_t id, Format format, IJSImage* image)
@@ -177,11 +176,11 @@ void AlbumArtStatic::attach_from_image(metadb_handle_list_cref handles, size_t i
 	const GUID guid = get_guid(id);
 	album_art_data_ptr data;
 
-	if FAILED(image_to_data(image, format, data))
-		return;
-
-	auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
-	Attach::init(callback, "Attaching image...");
+	if SUCCEEDED(image_to_data(image, format, data))
+	{
+		auto callback = fb2k::service_new<Attach>(Attach::Action::Attach, handles, guid, data);
+		Attach::init(callback, "Attaching image...");
+	}
 }
 
 void AlbumArtStatic::remove_attached_image(metadb_handle_list_cref handles, size_t id)

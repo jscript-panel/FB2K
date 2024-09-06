@@ -54,7 +54,7 @@ HRESULT AlbumArtStatic::bitmap_to_webp_data(IWICBitmap* bitmap, album_art_data_p
 	RETURN_IF_FAILED(lock->GetDataPointer(&dummy, &ptr));
 	RETURN_IF_FAILED(lock->GetStride(&stride));
 
-	const size_t new_size = WebPEncodeBGRA(ptr, rect.Width, rect.Height, static_cast<int>(stride), 95.f, &output);
+	const size_t new_size = WebPEncodeBGRA(ptr, rect.Width, rect.Height, js::to_int(stride), 95.f, &output);
 	if (new_size == 0)
 		return E_FAIL;
 

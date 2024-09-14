@@ -31,30 +31,29 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_vie
 {
 	for (const size_t i : std::views::iota(size_t{}, parent->get_num_children()))
 	{
-		contextmenu_node* child = parent->get_child(i);
-		std::string path(parent_path);
-		path.append(child->get_name());
+		const auto child = parent->get_child(i);
+		const auto name = child->get_name();
+		const auto type = child->get_type();
 
-		switch (child->get_type())
+		std::string path(parent_path);
+		path.append(name);
+
+		if (type == contextmenu_item_node::type_group)
 		{
-		case contextmenu_item_node::type_group:
 			path.append("/");
 			if (execute_recur(child, path))
 				return true;
+		}
+		else if (type == contextmenu_item_node::type_command && match_command(path))
+		{
+			if (WI_IsAnyFlagSet(child->get_display_flags(), contextmenu_item_node::FLAG_DISABLED_GRAYED))
+				return false;
 
-			break;
-		case contextmenu_item_node::type_command:
-			if (match_command(path))
-			{
-				if (WI_IsAnyFlagSet(child->get_display_flags(), contextmenu_item_node::FLAG_DISABLED_GRAYED))
-					return false;
-
-				child->execute();
-				return true;
-			}
-			break;
+			child->execute();
+			return true;
 		}
 	}
+
 	return false;
 }
 

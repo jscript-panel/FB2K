@@ -20,8 +20,11 @@ void Attach::run(threaded_process_status& status, abort_callback& abort)
 	for (auto&& [index, handle] : std::views::enumerate(m_handles))
 	{
 		const string8 path = handle->get_path();
-		if (!paths.emplace(path).second) continue;
-		if (!album_art_editor::g_get_interface(ptr, path)) continue;
+		if (!paths.emplace(path).second)
+			continue;
+
+		if (!album_art_editor::g_get_interface(ptr, path))
+			continue;
 
 		status.set_progress(index + 1, count);
 		status.set_item_path(path);
@@ -30,6 +33,7 @@ void Attach::run(threaded_process_status& status, abort_callback& abort)
 		{
 			auto lock = api->acquire_write(path, abort);
 			auto instance_ptr = ptr->open(nullptr, path, abort);
+
 			switch (m_action)
 			{
 			case Action::Attach:
@@ -42,6 +46,7 @@ void Attach::run(threaded_process_status& status, abort_callback& abort)
 				instance_ptr->remove_all_();
 				break;
 			}
+
 			instance_ptr->commit(abort);
 		}
 		catch (...) {}

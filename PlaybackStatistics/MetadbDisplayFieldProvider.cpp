@@ -2,7 +2,7 @@
 
 namespace
 {
-	using namespace std::literals::string_view_literals;
+	using namespace std::string_view_literals;
 
 	static constexpr std::array field_names =
 	{

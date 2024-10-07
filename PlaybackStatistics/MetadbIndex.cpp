@@ -22,7 +22,7 @@ namespace
 		MetadbIndex::init();
 	}
 
-	FB2K_ON_INIT_STAGE(init_stage, init_stages::after_config_read)
+	FB2K_ON_INIT_STAGE(init_stage, init_stages::after_config_read);
 }
 
 MetadbIndex::MetadbIndex() : m_hasher(hasher_md5::get())

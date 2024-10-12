@@ -58,6 +58,7 @@ bool AlbumArt::try_now_playing()
 	if (m_guid == album_art_ids::cover_front && core_api::is_main_thread() && !path.starts_with("file://") && path == Path::now_playing())
 	{
 		auto info = now_playing_album_art_notify_manager_v2::get()->current_v2();
+
 		if (info)
 		{
 			m_data = info.data;

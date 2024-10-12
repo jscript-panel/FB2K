@@ -27,6 +27,7 @@ namespace
 						continue;
 
 					const auto f = PlaybackStatistics::get_fields(old_hash);
+
 					if (!f)
 						continue;
 

@@ -41,6 +41,7 @@ bool ContextMenuCommand::execute_recur(contextmenu_node* parent, std::string_vie
 		if (type == contextmenu_item_node::type_group)
 		{
 			path.append("/");
+
 			if (execute_recur(child, path))
 				return true;
 		}

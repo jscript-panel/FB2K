@@ -66,6 +66,7 @@ bool MainMenuCommand::execute()
 			if (v2_ptr.is_valid() && v2_ptr->is_command_dynamic(i))
 			{
 				const auto node = v2_ptr->dynamic_instantiate(i);
+
 				if (execute_recur(node, parent_path))
 					return true;
 			}
@@ -108,6 +109,7 @@ bool MainMenuCommand::execute_recur(mainmenu_node::ptr node, std::string_view pa
 		for (const size_t i : std::views::iota(size_t{}, node->get_children_count()))
 		{
 			const auto child = node->get_child(i);
+
 			if (execute_recur(child, path))
 				return true;
 		}

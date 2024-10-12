@@ -17,18 +17,42 @@ namespace
 				if (handles.get_count() == 1)
 				{
 					auto rec = source.get_info(0);
+
 					if (rec.info.is_empty())
 						return;
 
 					const auto hash = MetadbIndex::client()->transform(rec.info->info(), handles[0]->get_location());
 					const auto f = PlaybackStatistics::get_fields(hash);
 
-					if (f.playcount > 0) callback.set_property(Component::name.data(), 0.0, "Playcount", pfc::format_uint(f.playcount));
-					if (f.loved > 0) callback.set_property(Component::name.data(), 1.0, "Loved", pfc::format_uint(f.loved));
-					if (f.rating > 0) callback.set_property(Component::name.data(), 2.0, "Rating", pfc::format_uint(f.rating));
-					if (f.skipcount > 0) callback.set_property(Component::name.data(), 3.0, "Skipcount", pfc::format_uint(f.skipcount));
-					if (f.first_played > 0) callback.set_property(Component::name.data(), 4.0, "First Played", PlaybackStatistics::timestamp_to_string(f.first_played));
-					if (f.last_played > 0) callback.set_property(Component::name.data(), 5.0, "Last Played", PlaybackStatistics::timestamp_to_string(f.last_played));
+					if (f.playcount > 0)
+					{
+						callback.set_property(Component::name.data(), 0.0, "Playcount", pfc::format_uint(f.playcount));
+					}
+
+					if (f.loved > 0)
+					{
+						callback.set_property(Component::name.data(), 1.0, "Loved", pfc::format_uint(f.loved));
+					}
+
+					if (f.rating > 0)
+					{
+						callback.set_property(Component::name.data(), 2.0, "Rating", pfc::format_uint(f.rating));
+					}
+
+					if (f.skipcount > 0)
+					{
+						callback.set_property(Component::name.data(), 3.0, "Skipcount", pfc::format_uint(f.skipcount));
+					}
+
+					if (f.first_played > 0)
+					{
+						callback.set_property(Component::name.data(), 4.0, "First Played", PlaybackStatistics::timestamp_to_string(f.first_played));
+					}
+
+					if (f.last_played > 0)
+					{
+						callback.set_property(Component::name.data(), 5.0, "Last Played", PlaybackStatistics::timestamp_to_string(f.last_played));
+					}
 				}
 				else
 				{

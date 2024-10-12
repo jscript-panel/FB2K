@@ -62,6 +62,7 @@ STDMETHODIMP DropTargetImpl::Drop(IDataObject* pDataObj, DWORD grfKeyState, POIN
 		if (m_action->m_effect != DROPEFFECT_NONE)
 		{
 			const auto g = Plman::api()->playlist_get_guid(m_action->m_playlistIndex);
+
 			if (g != pfc::guid_null)
 			{
 				auto ptr = fb2k::service_new<ProcessLocationsNotify>(g, m_action->m_base, m_action->m_to_select);

@@ -63,10 +63,12 @@ uint32_t PlaybackStatistics::get_total_playcount(metadb_handle_list_cref handles
 	for (const size_t i : std::views::iota(size_t{}, handles.get_count()))
 	{
 		auto rec = source.get_info(i);
+
 		if (rec.info.is_empty())
 			continue;
 
 		const auto hash = client->transform(rec.info->info(), handles[i]->get_location());
+
 		if (hash_set.emplace(hash).second)
 		{
 			total += get_fields(hash).playcount;
@@ -90,6 +92,7 @@ uint32_t PlaybackStatistics::string_to_timestamp(std::string_view str)
 	static const auto upper_limit = pfc::fileTimeUtoW(UINT_MAX);
 
 	const auto windows_time = pfc::filetimestamp_from_string(str.data());
+
 	if (windows_time == filetimestamp_invalid || windows_time < lower_limit || windows_time > upper_limit)
 		return UINT_MAX;
 

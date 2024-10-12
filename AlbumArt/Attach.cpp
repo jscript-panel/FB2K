@@ -20,6 +20,7 @@ void Attach::run(threaded_process_status& status, abort_callback& abort)
 	for (auto&& [index, handle] : std::views::enumerate(m_handles))
 	{
 		const string8 path = handle->get_path();
+
 		if (!paths.emplace(path).second)
 			continue;
 

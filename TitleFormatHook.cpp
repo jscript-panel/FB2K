@@ -142,6 +142,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 				bool include_weeks_days = true;
 
 				const auto years = diff / year_in_seconds;
+
 				if (years > 0)
 				{
 					include_weeks_days = false;
@@ -150,6 +151,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 				}
 
 				const auto months = diff / month_in_seconds;
+
 				if (months > 0)
 				{
 					diff -= months * month_in_seconds;
@@ -159,6 +161,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 				if (include_weeks_days)
 				{
 					const auto weeks = diff / week_in_seconds;
+
 					if (weeks > 0)
 					{
 						diff -= weeks * week_in_seconds;
@@ -166,6 +169,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 					}
 
 					const auto days = diff / day_in_seconds;
+
 					if (days > 0)
 					{
 						str << days << "d";
@@ -176,6 +180,7 @@ bool TitleFormatHook::process_since(titleformat_text_out* out, const char* func,
 			out->write(titleformat_inputtypes::unknown, str.trim(' '));
 		}
 	}
+
 	return true;
 }
 
@@ -189,6 +194,7 @@ std::string TitleFormatHook::get_string(titleformat_hook_function_params* params
 
 		return { str, len };
 	}
+
 	return {};
 }
 
@@ -197,8 +203,10 @@ size_t TitleFormatHook::get_num(titleformat_hook_function_params* params, size_t
 	if (index < m_param_count)
 	{
 		const auto value = params->get_param_uint(index);
+
 		if (value >= min && value <= max)
 			return value;
 	}
+
 	return fallback;
 }
